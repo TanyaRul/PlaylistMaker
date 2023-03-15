@@ -12,7 +12,7 @@ class MainActivity : AppCompatActivity() {
 
         val searchButton = findViewById<Button>(R.id.search)
 
-        searchButton.setOnClickListener{
+        searchButton.setOnClickListener {
             val searchIntent = Intent(this, SearchActivity::class.java)
             startActivity(searchIntent)
         }
