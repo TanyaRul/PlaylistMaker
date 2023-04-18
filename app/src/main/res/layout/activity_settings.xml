@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="?attr/colorSecondary"
     android:orientation="vertical">
 
     <!-- Settings -->
@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/settings_margin_start"
-        android:layout_marginTop="14dp"
+        android:layout_marginTop="@dimen/margin_top"
         android:layout_marginEnd="@dimen/settings_margin_end"
         android:orientation="horizontal">
 
@@ -21,70 +21,46 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:contentDescription="@string/settings"
             android:src="@drawable/arrow_back" />
+        <!--app:tint="?attr/colorOnSecondary"-->
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="28dp"
+            android:layout_marginStart="@dimen/text_margin_start"
+            android:fontFamily="@font/ys_display_medium"
             android:text="@string/settings"
-            android:textColor="@color/button_text"
+            android:textColor="?attr/colorOnPrimary"
             android:textSize="@dimen/primary_text_size" />
 
     </LinearLayout>
 
     <!-- Night theme -->
     <androidx.appcompat.widget.SwitchCompat
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:layout_marginStart="@dimen/settings_margin_start"
+        style="@style/SwitchStyle"
         android:layout_marginTop="40dp"
-        android:layout_marginEnd="@dimen/settings_margin_end"
-        android:paddingVertical="@dimen/settings_vertical_padding"
-        android:text="@string/night_theme"
-        android:textColor="@color/black"
-        android:textSize="@dimen/regular_text_size" />
+        android:text="@string/night_theme" />
 
     <!-- Share app -->
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:layout_marginStart="@dimen/settings_margin_start"
-        android:layout_marginEnd="@dimen/settings_margin_end"
-        android:paddingVertical="@dimen/settings_vertical_padding"
+        android:id="@+id/share"
+        style="@style/SettingsActivityTextStyle"
         android:text="@string/share"
-        android:textColor="@color/black"
-        android:textSize="@dimen/regular_text_size"
         app:drawableEndCompat="@drawable/share" />
 
     <!-- Support -->
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:layout_marginStart="@dimen/settings_margin_start"
-        android:layout_marginEnd="@dimen/settings_margin_end"
-        android:paddingVertical="@dimen/settings_vertical_padding"
+        android:id="@+id/support"
+        style="@style/SettingsActivityTextStyle"
         android:text="@string/support"
-        android:textColor="@color/black"
-        android:textSize="@dimen/regular_text_size"
         app:drawableEndCompat="@drawable/support" />
 
     <!-- Terms of use -->
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:layout_marginStart="@dimen/settings_margin_start"
-        android:layout_marginEnd="@dimen/settings_margin_end"
-        android:paddingVertical="@dimen/settings_vertical_padding"
+        android:id="@+id/terms_of_use"
+        style="@style/SettingsActivityTextStyle"
         android:text="@string/terms_of_use"
-        android:textColor="@color/black"
-        android:textSize="@dimen/regular_text_size"
         app:drawableEndCompat="@drawable/arrow_forward" />
 
 </LinearLayout>
