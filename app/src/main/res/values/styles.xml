@@ -5,7 +5,7 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/button_height</item>
         <item name="android:layout_weight">1</item>
-        <item name="android:layout_marginHorizontal">@dimen/button_horizontal_padding</item>
+        <item name="android:layout_marginHorizontal">@dimen/horizontal_padding</item>
         <item name="android:backgroundTint">@color/white</item>
         <item name="android:foreground">?attr/selectableItemBackground</item>
         <item name="android:fontFamily">@font/ys_display_medium</item>
@@ -59,11 +59,28 @@
         <item name="android:textCursorDrawable">@drawable/color_cursor</item>
     </style>
 
+    <style name="TrackViewArtistNameTrackTimeStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/min_margin_top</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textColor">@color/dark_gray</item>
+        <item name="android:textSize">@dimen/regular_text_size_low</item>
+    </style>
+
+    <style name="TrackViewEllipseStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/min_margin_top</item>
+    </style>
+
+    <style name="TrackViewArrowForwardStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">@dimen/track_margin_start</item>
+        <item name="android:layout_marginTop">@dimen/arrow_margin_top</item>
+        <item name="android:layout_marginEnd">@dimen/image_margin_end</item>
+        <item name="android:layout_marginBottom">@dimen/arrow_margin_bottom</item>
+    </style>
+
 </resources>
-
-
-
-
-
-
-
