@@ -39,16 +39,16 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="@dimen/layout_margin_top"
         android:orientation="horizontal"
-        android:paddingHorizontal="16dp">
+        android:paddingHorizontal="@dimen/horizontal_padding">
 
         <EditText
             android:id="@+id/inputEditText"
             style="@style/EditTextStyle"
             android:background="@drawable/rounding_edittext"
             android:drawableStart="@drawable/search_icon_gray"
-            android:drawablePadding="8dp"
+            android:drawablePadding="@dimen/edit_text_icon_padding"
             android:hint="@string/search"
             android:textSize="@dimen/regular_text_size" />
 
@@ -57,10 +57,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center|end"
-            android:layout_marginEnd="12dp"
+            android:layout_marginEnd="@dimen/image_margin_end"
             android:src="@drawable/clear"
             android:visibility="gone" />
 
     </FrameLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewTrackList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/layout_margin_top"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
 </LinearLayout>

@@ -18,16 +18,16 @@ class SettingsActivity : AppCompatActivity() {
         val support = findViewById<TextView>(R.id.support)
         val termsOfUse = findViewById<TextView>(R.id.terms_of_use)
 
-
         backButton.setOnClickListener {
             finish()
         }
 
         shareApp.setOnClickListener {
             val urlCourse = getString(R.string.url_course)
-            val shareIntent = Intent(ACTION_SEND)
-            shareIntent.type = "text/plain"
-            shareIntent.putExtra(EXTRA_TEXT, urlCourse)
+            val shareIntent = Intent(ACTION_SEND).apply {
+                type = "text/plain"
+                putExtra(EXTRA_TEXT, urlCourse)
+            }
             startActivity(shareIntent)
         }
 
@@ -35,21 +35,22 @@ class SettingsActivity : AppCompatActivity() {
             val email = getString(R.string.email_address)
             val subject = getString(R.string.email_subject)
             val message = getString(R.string.email_message)
-            val supportIntent = Intent(ACTION_SENDTO)
-            supportIntent.data = Uri.parse("mailto:")
-            supportIntent.putExtra(EXTRA_EMAIL, arrayOf(email))
-            supportIntent.putExtra(EXTRA_SUBJECT, subject)
-            supportIntent.putExtra(EXTRA_TEXT, message)
+            val supportIntent = Intent(ACTION_SENDTO).apply {
+                data = Uri.parse("mailto:")
+                putExtra(EXTRA_EMAIL, arrayOf(email))
+                putExtra(EXTRA_SUBJECT, subject)
+                putExtra(EXTRA_TEXT, message)
+            }
             startActivity(supportIntent)
         }
 
         termsOfUse.setOnClickListener {
             val urlOffer = getString(R.string.url_offer)
-            val termsOfUseIntent = Intent(ACTION_VIEW)
-            termsOfUseIntent.data = Uri.parse(urlOffer)
+            val termsOfUseIntent = Intent(ACTION_VIEW).apply {
+                data = Uri.parse(urlOffer)
+            }
             startActivity(termsOfUseIntent)
         }
-
 
     }
 }
