@@ -8,6 +8,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import java.text.SimpleDateFormat
+import java.util.*
 
 class TrackViewHolder(
     parentView: ViewGroup,
@@ -32,6 +34,7 @@ class TrackViewHolder(
             .into(albumCoverView)
         trackNameView.text = item.trackName
         artistNameView.text = item.artistName
-        trackTimeView.text = item.trackTime
+        trackTimeView.text =
+            SimpleDateFormat("mm:ss", Locale.getDefault()).format(item.trackTimeMillis)
     }
 }

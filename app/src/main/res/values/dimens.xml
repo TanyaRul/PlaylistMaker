@@ -26,4 +26,9 @@
     <dimen name="image_margin_end">12dp</dimen>
     <dimen name="track_layout_width">0dp</dimen>
     <dimen name="root_layout_height">61dp</dimen>
+    <dimen name="medium_text_size">19sp</dimen>
+    <dimen name="medium_text_size_low">14sp</dimen>
+    <dimen name="button_refresh_corner_radius">54dp</dimen>
+    <dimen name="layout_margin_top_high">110dp</dimen>
+    <dimen name="layout_margin_top_low">16dp</dimen>
 </resources>
