@@ -77,12 +77,22 @@ class SearchActivity : AppCompatActivity() {
                 text = inputEditText.text.toString()
                 clearButton.visibility = clearButtonVisibility(s)
 
-                if (inputEditText.hasFocus() && s?.isEmpty() == true && searchHistoryList.isNotEmpty()) {
-                    showHistoryScreen()
-                }
-                else {
-                    trackAdapter.trackList = trackList
-                    hideHistoryScreen()
+                if (inputEditText.hasFocus()) {
+                    if (s?.isEmpty() == false) {
+                        recyclerView.visibility = View.VISIBLE
+                        trackList.clear()
+                        trackAdapter.trackList = trackList
+                        hideHistoryScreen()
+                    }
+                    fillHistory()
+                    if (s?.isEmpty() == true && searchHistoryList.isNotEmpty()) {
+                        showHistoryScreen()
+                        recyclerView.visibility = View.VISIBLE
+                        placeholderScreen.visibility = View.GONE
+                    } else {
+                        recyclerView.visibility = View.GONE
+                        placeholderScreen.visibility = View.GONE
+                    }
                 }
             }
 
@@ -118,14 +128,12 @@ class SearchActivity : AppCompatActivity() {
             inputMethodManager?.hideSoftInputFromWindow(inputEditText.windowToken, 0)
             trackList.clear()
             placeholderScreen.visibility = View.INVISIBLE
-            recyclerView.visibility = View.VISIBLE
             trackAdapter.notifyDataSetChanged()
-            searchHistoryList.clear()
-            searchHistoryList.addAll(searchHistory.readSearchHistory())
-            if (searchHistoryList.size > 0) {
-                showHistory()
-            }
-            else {
+            fillHistory()
+            if (searchHistoryList.isNotEmpty()) {
+                recyclerView.visibility = View.VISIBLE
+                showHistoryScreen()
+            } else {
                 hideHistoryScreen()
             }
 
@@ -140,10 +148,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         clearHistoryButton.setOnClickListener {
-            sharedPrefs
-                .edit()
-                .remove(SearchHistory.SEARCH_HISTORY_KEY)
-                .apply()
+            SearchHistory.clearSearchHistory()
             searchHistoryList.clear()
             hideHistoryScreen()
             recyclerView.visibility = View.VISIBLE
@@ -245,6 +250,8 @@ class SearchActivity : AppCompatActivity() {
     private fun showHistoryScreen() {
         searchHistoryTextView.visibility = View.VISIBLE
         clearHistoryButton.visibility = View.VISIBLE
+        trackAdapter.trackList = searchHistoryList
+        trackAdapter.notifyDataSetChanged()
     }
 
     private fun hideHistoryScreen() {
@@ -252,12 +259,9 @@ class SearchActivity : AppCompatActivity() {
         clearHistoryButton.visibility = View.GONE
     }
 
-    private fun showHistory() {
-        showHistoryScreen()
+    private fun fillHistory() {
         searchHistoryList.clear()
         searchHistoryList.addAll(searchHistory.readSearchHistory())
-        trackAdapter.trackList = searchHistoryList
-        trackAdapter.notifyDataSetChanged()
     }
 
 }
