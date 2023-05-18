@@ -83,4 +83,29 @@
         <item name="android:layout_marginBottom">@dimen/arrow_margin_bottom</item>
     </style>
 
+    <style name="SearchActivityButtonStyle" parent="Widget.MaterialComponents.Button.UnelevatedButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:layout_marginTop">@dimen/layout_margin_top</item>
+        <item name="android:backgroundTint">?attr/colorOnPrimary</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="android:textColor">?attr/colorSecondary</item>
+        <item name="android:textSize">@dimen/medium_text_size_low</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="cornerRadius">@dimen/search_history_button_corner_radius</item>
+        <item name="android:visibility">gone</item>
+    </style>
+
+    <style name="SearchActivityTextStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+        <item name="android:textSize">@dimen/medium_text_size</item>
+    </style>
+
 </resources>

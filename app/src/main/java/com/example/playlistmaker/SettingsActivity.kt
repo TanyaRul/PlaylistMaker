@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SwitchCompat
 
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -17,6 +18,7 @@ class SettingsActivity : AppCompatActivity() {
         val shareApp = findViewById<TextView>(R.id.share)
         val support = findViewById<TextView>(R.id.support)
         val termsOfUse = findViewById<TextView>(R.id.terms_of_use)
+        val themeSwitcher = findViewById<SwitchCompat>(R.id.themeSwitcher)
 
         backButton.setOnClickListener {
             finish()
@@ -52,5 +54,10 @@ class SettingsActivity : AppCompatActivity() {
             startActivity(termsOfUseIntent)
         }
 
+        themeSwitcher.isChecked = (applicationContext as App).darkTheme
+
+        themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
+            (applicationContext as App).switchTheme(checked)
+        }
     }
 }

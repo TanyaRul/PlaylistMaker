@@ -38,6 +38,7 @@
 
     <!-- Night theme -->
     <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/themeSwitcher"
         style="@style/SwitchStyle"
         android:layout_marginTop="40dp"
         android:text="@string/night_theme" />
