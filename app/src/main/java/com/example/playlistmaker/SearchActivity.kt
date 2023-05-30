@@ -77,23 +77,22 @@ class SearchActivity : AppCompatActivity() {
                 text = inputEditText.text.toString()
                 clearButton.visibility = clearButtonVisibility(s)
 
-                if (inputEditText.hasFocus()) {
-                    if (s?.isEmpty() == false) {
-                        recyclerView.visibility = View.VISIBLE
-                        trackList.clear()
-                        trackAdapter.trackList = trackList
-                        hideHistoryScreen()
-                    }
-                    fillHistory()
-                    if (s?.isEmpty() == true && searchHistoryList.isNotEmpty()) {
-                        showHistoryScreen()
-                        recyclerView.visibility = View.VISIBLE
-                        placeholderScreen.visibility = View.GONE
-                    } else {
-                        recyclerView.visibility = View.GONE
-                        placeholderScreen.visibility = View.GONE
-                    }
+                if (s?.isEmpty() == false) {
+                    recyclerView.visibility = View.VISIBLE
+                    trackList.clear()
+                    trackAdapter.trackList = trackList
+                    hideHistoryScreen()
                 }
+                fillHistory()
+                if (s?.isEmpty() == true && searchHistoryList.isNotEmpty()) {
+                    showHistoryScreen()
+                    recyclerView.visibility = View.VISIBLE
+                    placeholderScreen.visibility = View.GONE
+                } else {
+                    recyclerView.visibility = View.GONE
+                    placeholderScreen.visibility = View.GONE
+                }
+
             }
 
             override fun afterTextChanged(s: Editable?) {
