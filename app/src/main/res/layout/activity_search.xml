@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/colorSecondary">
 
-    <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorSecondary"
@@ -72,6 +73,14 @@
             android:layout_marginTop="@dimen/search_history_text_margin_top"
             android:text="@string/search_history"
             android:visibility="gone" />
+
+        <ProgressBar android:id="@+id/progressBar"
+            android:layout_width="@dimen/progressBar_dimens"
+            android:layout_height="@dimen/progressBar_dimens"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/margin_top_high"
+            android:indeterminateTint="@color/blue"
+            android:visibility="gone"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewTrackList"

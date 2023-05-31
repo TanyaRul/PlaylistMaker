@@ -45,4 +45,6 @@
     <dimen name="min_margin_bottom">4dp</dimen>
     <dimen name="playback_progress_margin_bottom">39dp</dimen>
     <dimen name="track_data_margin_between">17dp</dimen>
+    <dimen name="margin_top_high">148dp</dimen>
+    <dimen name="progressBar_dimens">44dp</dimen>
 </resources>

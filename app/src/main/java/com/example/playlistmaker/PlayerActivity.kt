@@ -1,14 +1,17 @@
 package com.example.playlistmaker
 
+import android.media.MediaPlayer
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.google.gson.Gson
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -16,6 +19,11 @@ class PlayerActivity : AppCompatActivity() {
 
     companion object {
         const val TRACK_DATA_KEY = "key_for_track_data"
+        private const val STATE_DEFAULT = 0
+        private const val STATE_PREPARED = 1
+        private const val STATE_PLAYING = 2
+        private const val STATE_PAUSED = 3
+        private const val UPDATE_PLAYBACK_PROGRESS_DELAY_MS = 500L
     }
 
     private lateinit var backButton: ImageButton
@@ -32,24 +40,44 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var currentReleaseDate: TextView
     private lateinit var currentGenre: TextView
     private lateinit var currentCountry: TextView
+    private var mediaPlayer = MediaPlayer()
+    private var playerState = STATE_DEFAULT
+    private val handler = Handler(Looper.getMainLooper())
+    private val playbackProgressRunnable = createUpdateTimerTask()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player)
 
-        findViewById()
+        initView()
 
         backButton.setOnClickListener {
             finish()
         }
 
-        val json: String? = intent.getStringExtra(TRACK_DATA_KEY)
-        val track: Track? = Gson().fromJson(json, Track::class.java)
+        val track = intent.getParcelableExtra<Track>(TRACK_DATA_KEY)
 
-        if (track != null) fillTrackItem(track)
+        if (track != null) {
+            fillTrackItem(track)
+            if (track.previewUrl?.isNotEmpty() == true) {
+                preparePlayer(track.previewUrl)
+            }
+        }
+
+        playbackControlButton.setOnClickListener {
+            if (track != null) {
+                if (track.previewUrl?.isNotEmpty() == true) {
+                    playbackControl(track)
+                } else {
+                    Toast.makeText(this, "PREVIEW IS EMPTY", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
     }
 
-    private fun findViewById() {
+    private fun initView() {
         backButton = findViewById(R.id.backToSearch)
         albumCover = findViewById(R.id.cover)
         trackName = findViewById(R.id.trackName)
@@ -76,7 +104,7 @@ class PlayerActivity : AppCompatActivity() {
 
         trackName.text = track.trackName
         artistName.text = track.artistName
-        playbackProgress.text = "0:30"
+        playbackProgress.text = getString(R.string.playback_progress_start)
         currentTrackTime.text =
             SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)
 
@@ -100,6 +128,72 @@ class PlayerActivity : AppCompatActivity() {
         val calendar: Calendar = Calendar.getInstance()
         calendar.time = format.parse(track.releaseDate) as Date
         return calendar.get(Calendar.YEAR).toString()
+    }
+
+    private fun preparePlayer(url: String) {
+        mediaPlayer.setDataSource(url)
+        mediaPlayer.prepareAsync()
+        mediaPlayer.setOnPreparedListener {
+            playerState = STATE_PREPARED
+            playbackProgress.text = getString(R.string.playback_progress_start)
+        }
+        mediaPlayer.setOnCompletionListener {
+            handler.removeCallbacks(playbackProgressRunnable)
+            playbackControlButton.setImageResource(R.drawable.play_button)
+            playerState = STATE_PREPARED
+            playbackProgress.text = getString(R.string.playback_progress_start)
+        }
+    }
+
+    private fun startPlayer(track: Track) {
+        if (track.previewUrl?.isNotEmpty() == true) {
+            mediaPlayer.start()
+            handler.post(playbackProgressRunnable)
+            playbackControlButton.setImageResource(R.drawable.pause_button)
+            playerState = STATE_PLAYING
+        }
+    }
+
+    private fun pausePlayer() {
+        mediaPlayer.pause()
+        handler.removeCallbacks(playbackProgressRunnable)
+        playbackControlButton.setImageResource(R.drawable.play_button)
+        playerState = STATE_PAUSED
+    }
+
+    private fun playbackControl(track: Track) {
+        when (playerState) {
+            STATE_PLAYING -> {
+                pausePlayer()
+            }
+
+            STATE_PREPARED, STATE_PAUSED -> {
+                startPlayer(track)
+            }
+        }
+    }
+
+    private fun createUpdateTimerTask(): Runnable {
+        return object : Runnable {
+            override fun run() {
+                playbackProgress.text = SimpleDateFormat(
+                    "mm:ss",
+                    Locale.getDefault()
+                ).format(mediaPlayer.currentPosition)
+                handler.postDelayed(this, UPDATE_PLAYBACK_PROGRESS_DELAY_MS)
+            }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        pausePlayer()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mediaPlayer.release()
+        handler.removeCallbacks(playbackProgressRunnable)
     }
 
 }
