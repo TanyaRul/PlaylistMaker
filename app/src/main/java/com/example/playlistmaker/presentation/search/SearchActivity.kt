@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.presentation.search
 
 import android.content.Context
 import android.content.Intent
@@ -14,6 +14,14 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmaker.App
+import com.example.playlistmaker.domain.models.NetworkStatus
+import com.example.playlistmaker.presentation.player.PlayerActivity
+import com.example.playlistmaker.R
+import com.example.playlistmaker.data.SearchHistory
+import com.example.playlistmaker.data.dto.TracksSearchResponse
+import com.example.playlistmaker.data.network.ItunesApi
+import com.example.playlistmaker.domain.models.Track
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -214,10 +222,10 @@ class SearchActivity : AppCompatActivity() {
             progressBar.visibility = View.VISIBLE
 
             itunesService.search(text)
-                .enqueue(object : Callback<TracksResponse> {
+                .enqueue(object : Callback<TracksSearchResponse> {
                     override fun onResponse(
-                        call: Call<TracksResponse>,
-                        response: Response<TracksResponse>
+                        call: Call<TracksSearchResponse>,
+                        response: Response<TracksSearchResponse>
                     ) {
                         progressBar.visibility = View.GONE
                         if (response.code() == 200) {
@@ -233,7 +241,7 @@ class SearchActivity : AppCompatActivity() {
                         }
                     }
 
-                    override fun onFailure(call: Call<TracksResponse>, t: Throwable) {
+                    override fun onFailure(call: Call<TracksSearchResponse>, t: Throwable) {
                         progressBar.visibility = View.GONE
                         showMessage(NetworkStatus.ERROR)
                     }

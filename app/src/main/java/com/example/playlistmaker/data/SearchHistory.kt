@@ -1,8 +1,9 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.data
 
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import com.example.playlistmaker.App.Companion.sharedPrefs
+import com.example.playlistmaker.App
+import com.example.playlistmaker.domain.models.Track
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
@@ -12,7 +13,7 @@ class SearchHistory(private val sharedPrefs: SharedPreferences) {
         const val HISTORY_MAX_SIZE = 10
 
         fun clearSearchHistory() {
-            sharedPrefs
+            App.sharedPrefs
                 .edit()
                 .remove(SEARCH_HISTORY_KEY)
                 .apply()
