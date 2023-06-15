@@ -18,7 +18,7 @@ import com.example.playlistmaker.App
 import com.example.playlistmaker.domain.models.NetworkStatus
 import com.example.playlistmaker.presentation.player.PlayerActivity
 import com.example.playlistmaker.R
-import com.example.playlistmaker.data.SearchHistory
+import com.example.playlistmaker.data.SearchRepository
 import com.example.playlistmaker.data.dto.TracksSearchResponse
 import com.example.playlistmaker.data.network.ItunesApi
 import com.example.playlistmaker.domain.models.Track
@@ -61,7 +61,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var trackAdapter: TrackAdapter
     private lateinit var searchHistoryTextView: TextView
     private lateinit var clearHistoryButton: Button
-    private lateinit var searchHistory: SearchHistory
+    private lateinit var searchHistory: SearchRepository
     private lateinit var sharedPrefs: SharedPreferences
     private lateinit var progressBar: ProgressBar
 
@@ -79,7 +79,7 @@ class SearchActivity : AppCompatActivity() {
 
         sharedPrefs = getSharedPreferences(App.PLM_PREFERENCES, MODE_PRIVATE)
         inputEditText.setText(text)
-        searchHistory = SearchHistory(sharedPrefs)
+        searchHistory = SearchRepository(applicationContext)
         trackAdapter = TrackAdapter(trackList) {
             searchHistory.addTrackToHistory(it)
             if (clickDebounce()) {
@@ -173,7 +173,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         clearHistoryButton.setOnClickListener {
-            SearchHistory.clearSearchHistory()
+            clearSearchHistory()
             searchHistoryList.clear()
             hideHistoryScreen()
             recyclerView.visibility = View.VISIBLE
@@ -212,6 +212,13 @@ class SearchActivity : AppCompatActivity() {
         } else {
             View.VISIBLE
         }
+    }
+
+    private fun clearSearchHistory() {
+        sharedPrefs
+            .edit()
+            .remove(SearchRepository.SEARCH_HISTORY_KEY)
+            .apply()
     }
 
     private fun searchTrack() {
