@@ -1,23 +1,20 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.data
 
-import android.content.SharedPreferences
+import android.content.Context
 import androidx.core.content.edit
-import com.example.playlistmaker.App.Companion.sharedPrefs
+import com.example.playlistmaker.domain.models.Track
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-class SearchHistory(private val sharedPrefs: SharedPreferences) {
-    companion object {
-        const val SEARCH_HISTORY_KEY = "key_for_search_history"
-        const val HISTORY_MAX_SIZE = 10
+class SearchRepository(context: Context) {
 
-        fun clearSearchHistory() {
-            sharedPrefs
-                .edit()
-                .remove(SEARCH_HISTORY_KEY)
-                .apply()
-        }
+    companion object {
+        const val HISTORY_MAX_SIZE = 10
+        const val SHARED_PREFS = "shared_prefs"
+        const val SEARCH_HISTORY_KEY = "key_for_search_history"
     }
+
+    private val sharedPrefs = context.getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE)
 
     fun readSearchHistory(): ArrayList<Track> {
         val json = sharedPrefs.getString(SEARCH_HISTORY_KEY, null) ?: return ArrayList()
