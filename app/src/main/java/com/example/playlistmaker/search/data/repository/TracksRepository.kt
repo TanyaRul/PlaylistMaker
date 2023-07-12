@@ -5,6 +5,7 @@ import com.example.playlistmaker.search.domain.model.Track
 
 interface TracksRepository {
     fun search(text: String): Resource<List<Track>>
-    fun addTrackToFavorites(track: Track)
-    fun removeTrackFromFavorites(track: Track)
+    fun readSearchHistory(): List<Track>
+    fun saveSearchHistory(tracks: List<Track>)
+    fun clearSearchHistory()
 }

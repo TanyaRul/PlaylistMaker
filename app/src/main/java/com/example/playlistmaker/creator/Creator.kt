@@ -1,24 +1,44 @@
 package com.example.playlistmaker.creator
 
 import android.content.Context
-import com.example.playlistmaker.player.data.repository.PlayerRepository
-import com.example.playlistmaker.search.data.storage.LocalStorage
+import com.example.playlistmaker.player.data.impl.PlayerRepositoryImpl
+import com.example.playlistmaker.player.domain.PlayerInteractor
+import com.example.playlistmaker.player.domain.impl.PlayerInteractorImpl
 import com.example.playlistmaker.search.data.impl.TracksRepositoryImpl
 import com.example.playlistmaker.search.data.network.RetrofitNetworkClient
 import com.example.playlistmaker.search.domain.TracksInteractor
 import com.example.playlistmaker.search.data.repository.TracksRepository
+import com.example.playlistmaker.search.data.storage.SharedPrefsSearchHistoryStorage
 import com.example.playlistmaker.search.domain.impl.TracksInteractorImpl
+import com.example.playlistmaker.settings.data.impl.SettingsRepositoryImpl
+import com.example.playlistmaker.settings.domain.SettingsInteractor
+import com.example.playlistmaker.settings.domain.impl.SettingsInteractorImpl
+import com.example.playlistmaker.sharing.data.impl.ExternalNavigatorImpl
+import com.example.playlistmaker.sharing.domain.interactor.SharingInteractor
+import com.example.playlistmaker.sharing.domain.impl.SharingInteractorImpl
 
 object Creator {
     private fun getTracksRepository(context: Context): TracksRepository {
         return TracksRepositoryImpl(
             RetrofitNetworkClient(context),
-            LocalStorage(context.getSharedPreferences("local_storage", Context.MODE_PRIVATE)),
+            SharedPrefsSearchHistoryStorage(context),
         )
     }
 
     fun provideTracksInteractor(context: Context): TracksInteractor {
         return TracksInteractorImpl(getTracksRepository(context))
+    }
+
+    fun providePlayerInteractor(context: Context): PlayerInteractor {
+        return PlayerInteractorImpl(PlayerRepositoryImpl(context))
+    }
+
+    fun provideSharingInteractor(context: Context): SharingInteractor {
+        return SharingInteractorImpl(ExternalNavigatorImpl(context))
+    }
+
+    fun provideSettingsInteractor(context: Context): SettingsInteractor {
+        return SettingsInteractorImpl(SettingsRepositoryImpl(context))
     }
 
 }

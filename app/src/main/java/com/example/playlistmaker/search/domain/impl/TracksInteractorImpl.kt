@@ -8,13 +8,6 @@ import java.util.concurrent.Executors
 
 class TracksInteractorImpl (private val repository: TracksRepository) : TracksInteractor {
 
-    /*override fun search(text: String, consumer: TracksInteractor.TracksConsumer) {
-        val t = Thread {
-            consumer.consume(repository.search(text))
-        }
-        t.start()
-    }*/
-
     private val executor = Executors.newCachedThreadPool()
 
     override fun search(text: String, consumer: TracksInteractor.TracksConsumer) {
@@ -26,16 +19,15 @@ class TracksInteractorImpl (private val repository: TracksRepository) : TracksIn
         }
     }
 
-    override fun addTrackToFavorites(track: Track) {
-        repository.addTrackToFavorites(track)
+    override fun readSearchHistory(): List<Track> {
+        return repository.readSearchHistory()
     }
 
-    override fun removeTrackFromFavorites(track: Track) {
-        repository.removeTrackFromFavorites(track)
+    override fun saveSearchHistory(tracks: List<Track>) {
+       return repository.saveSearchHistory(tracks)
     }
 
+    override fun clearSearchHistory() {
+        repository.clearSearchHistory()
+    }
 }
-
-
-
-

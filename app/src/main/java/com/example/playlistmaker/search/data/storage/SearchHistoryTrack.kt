@@ -1,6 +1,6 @@
-package com.example.playlistmaker.search.domain.model
+package com.example.playlistmaker.search.data.storage
 
-data class Track(
+data class SearchHistoryTrack(
     val trackId: String,
     val trackName: String,
     val artistName: String,

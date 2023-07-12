@@ -1,28 +1,28 @@
 package com.example.playlistmaker.search.data.impl
 
-import com.example.playlistmaker.search.data.storage.LocalStorage
 import com.example.playlistmaker.search.data.network.NetworkClient
 import com.example.playlistmaker.util.Resource
 import com.example.playlistmaker.search.data.dto.TracksSearchRequest
 import com.example.playlistmaker.search.data.dto.TracksSearchResponse
 import com.example.playlistmaker.search.data.repository.TracksRepository
+import com.example.playlistmaker.search.data.storage.SearchHistoryStorage
+import com.example.playlistmaker.search.data.storage.SearchHistoryTrack
 import com.example.playlistmaker.search.domain.model.Track
 
 class TracksRepositoryImpl(
     private val networkClient: NetworkClient,
-    private val localStorage: LocalStorage,
+    private val searchHistoryStorage: SearchHistoryStorage,
 ) : TracksRepository {
 
     override fun search(text: String): Resource<List<Track>> {
         val response = networkClient.doRequest(TracksSearchRequest(text))
 
         return when (response.resultCode) {
-            -1 -> {
+            ERROR_NO_CONNECTION -> {
                 Resource.Error("Проверьте подключение к интернету")
             }
-            200 -> {
-                val stored = localStorage.getSavedFavorites()
 
+            SEARCH_SUCCESS -> {
                 Resource.Success((response as TracksSearchResponse).results.map {
                     Track(
                         trackId = it.trackId,
@@ -35,21 +35,44 @@ class TracksRepositoryImpl(
                         primaryGenreName = it.primaryGenreName,
                         country = it.country,
                         previewUrl = it.previewUrl,
-                        inFavorite = stored.contains(it.trackId),
                     )
                 })
             }
+
             else -> {
                 Resource.Error("Ошибка сервера")
             }
         }
     }
 
-    override fun addTrackToFavorites(track: Track) {
-        localStorage.addToFavorites(track.trackId)
+    override fun readSearchHistory(): List<Track> {
+        return searchHistoryStorage.readSearchHistory().map {
+            Track(
+                trackId = it.trackId,
+                trackName = it.trackName,
+                artistName = it.artistName,
+                trackTimeMillis = it.trackTimeMillis,
+                artworkUrl100 = it.artworkUrl100,
+                collectionName = it.collectionName,
+                releaseDate = it.releaseDate,
+                primaryGenreName = it.primaryGenreName,
+                country = it.country,
+                previewUrl = it.previewUrl,
+            )
+        }
     }
 
-    override fun removeTrackFromFavorites(track: Track) {
-        localStorage.removeFromFavorites(track.trackId)
+    override fun saveSearchHistory(tracks: List<Track>) {
+        val _tracks: ArrayList<SearchHistoryTrack> = searchHistoryStorage.readSearchHistory()
+        searchHistoryStorage.saveSearchHistory(_tracks)
+    }
+
+    override fun clearSearchHistory() {
+        searchHistoryStorage.clearSearchHistory()
+    }
+
+    companion object {
+        const val ERROR_NO_CONNECTION = -1
+        const val SEARCH_SUCCESS = 200
     }
 }

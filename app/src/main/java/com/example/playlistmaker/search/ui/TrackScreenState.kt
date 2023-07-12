@@ -9,10 +9,6 @@ sealed interface TrackScreenState {
         val trackList: List<Track>
     ) : TrackScreenState
 
-    /*data class Content(
-        val trackModel: Track,
-    ): TrackScreenState()*/
-
     data class Error(
         val errorMessage: String
     ) : TrackScreenState

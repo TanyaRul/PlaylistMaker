@@ -4,8 +4,9 @@ import com.example.playlistmaker.search.domain.model.Track
 
 interface TracksInteractor {
     fun search(text: String, consumer: TracksConsumer)
-    fun addTrackToFavorites(track: Track)
-    fun removeTrackFromFavorites(track: Track)
+    fun readSearchHistory(): List<Track>
+    fun saveSearchHistory(tracks: List<Track>)
+    fun clearSearchHistory()
 
     interface TracksConsumer {
         fun consume(foundTracks: List<Track>?, errorMessage: String?)

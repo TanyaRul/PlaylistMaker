@@ -3,26 +3,28 @@ package com.example.playlistmaker
 import android.app.Application
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
+import com.example.playlistmaker.creator.Creator
+import com.example.playlistmaker.settings.domain.model.ThemeSettings
 
 class App : Application() {
-    companion object {
+    /*companion object {
         const val PLM_PREFERENCES = "plm_preferences"
         const val SWITCH_KEY = "key_for_switch"
         lateinit var sharedPrefs: SharedPreferences
-    }
+    }*/
 
-    var darkTheme = false
+    //var darkTheme = false
 
     override fun onCreate() {
         super.onCreate()
 
-        sharedPrefs = getSharedPreferences(PLM_PREFERENCES, MODE_PRIVATE)
+        /*sharedPrefs = getSharedPreferences(PLM_PREFERENCES, MODE_PRIVATE)
         darkTheme = sharedPrefs.getBoolean(SWITCH_KEY, false)
-        switchTheme(darkTheme)
+        switchTheme(darkTheme)*/
 
     }
 
-    fun switchTheme(darkThemeEnabled: Boolean) {
+    /*fun switchTheme(darkThemeEnabled: Boolean) {
         darkTheme = darkThemeEnabled
         AppCompatDelegate.setDefaultNightMode(
             if (darkThemeEnabled) {
@@ -34,6 +36,6 @@ class App : Application() {
         sharedPrefs.edit()
             .putBoolean(SWITCH_KEY, darkTheme)
             .apply()
-    }
+    }*/
 
 }

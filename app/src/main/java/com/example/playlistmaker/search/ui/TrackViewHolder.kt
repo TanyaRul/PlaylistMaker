@@ -13,7 +13,6 @@ import com.example.playlistmaker.search.domain.model.Track
 import java.text.SimpleDateFormat
 import java.util.*
 
-//class TrackViewHolder(private val binding: RecyclerItemBinding): RecyclerView.ViewHolder(binding.root)
 class TrackViewHolder(
     parentView: ViewGroup,
     itemView: View = LayoutInflater.from(parentView.context)
@@ -23,13 +22,8 @@ class TrackViewHolder(
     private val trackNameView: TextView = itemView.findViewById(R.id.trackName)
     private val artistNameView: TextView = itemView.findViewById(R.id.artistName)
     private val trackTimeView: TextView = itemView.findViewById(R.id.trackTime)
-    //var inFavoriteToggle: ImageView = itemView.findViewById(R.id.favorite)
 
     fun bind(item: Track) {
-
-        //binding.title.text = item.text
-        //binding.field.text = item.field
-
         Glide.with(itemView)
             .load(item.artworkUrl100)
             .placeholder(R.drawable.placeholder)
@@ -44,15 +38,5 @@ class TrackViewHolder(
         artistNameView.text = item.artistName
         trackTimeView.text =
             SimpleDateFormat("mm:ss", Locale.getDefault()).format(item.trackTimeMillis)
-
-        //inFavoriteToggle.setImageDrawable(getFavoriteToggleDrawable(item.inFavorite))
-        //itemView.setOnClickListener { clickListener.onMovieClick(item) }
-        //inFavoriteToggle.setOnClickListener { clickListener.onFavoriteToggleClick(item) }
     }
-
-    /*private fun getFavoriteToggleDrawable(inFavorite: Boolean): Drawable? {
-        return itemView.context.getDrawable(
-            if(inFavorite) R.drawable.active_favorite else R.drawable.inactive_favorite
-        )
-    }*/
 }

@@ -1,65 +1,53 @@
 package com.example.playlistmaker.settings.ui.activity
 
-import android.content.Intent
-import android.content.Intent.*
-import android.net.Uri
 import android.os.Bundle
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SwitchCompat
-import com.example.playlistmaker.App
+import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.R
+import com.example.playlistmaker.databinding.ActivitySettingsBinding
+import com.example.playlistmaker.settings.ui.view_model.SettingsViewModel
 
 class SettingsActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivitySettingsBinding
+    private lateinit var viewModel: SettingsViewModel
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_settings)
+        binding = ActivitySettingsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val backButton = findViewById<ImageView>(R.id.backToMainActivity)
-        val shareApp = findViewById<TextView>(R.id.share)
-        val support = findViewById<TextView>(R.id.support)
-        val termsOfUse = findViewById<TextView>(R.id.terms_of_use)
-        val themeSwitcher = findViewById<SwitchCompat>(R.id.themeSwitcher)
+        viewModel = ViewModelProvider(this, SettingsViewModel.getViewModelFactory())[SettingsViewModel::class.java]
 
-        backButton.setOnClickListener {
+        binding.backToMainActivity.setOnClickListener {
             finish()
         }
 
-        shareApp.setOnClickListener {
+        binding.share.setOnClickListener {
             val urlCourse = getString(R.string.url_course)
-            val shareIntent = Intent(ACTION_SEND).apply {
-                type = "text/plain"
-                putExtra(EXTRA_TEXT, urlCourse)
-            }
-            startActivity(shareIntent)
+            viewModel.shareApp(urlCourse)
         }
 
-        support.setOnClickListener {
+        binding.support.setOnClickListener {
             val email = getString(R.string.email_address)
             val subject = getString(R.string.email_subject)
             val message = getString(R.string.email_message)
-            val supportIntent = Intent(ACTION_SENDTO).apply {
-                data = Uri.parse("mailto:")
-                putExtra(EXTRA_EMAIL, arrayOf(email))
-                putExtra(EXTRA_SUBJECT, subject)
-                putExtra(EXTRA_TEXT, message)
-            }
-            startActivity(supportIntent)
+            viewModel.openSupport(email, subject, message)
         }
 
-        termsOfUse.setOnClickListener {
+        binding.termsOfUse.setOnClickListener {
             val urlOffer = getString(R.string.url_offer)
-            val termsOfUseIntent = Intent(ACTION_VIEW).apply {
-                data = Uri.parse(urlOffer)
-            }
-            startActivity(termsOfUseIntent)
+            viewModel.openTerms(urlOffer)
         }
 
-        themeSwitcher.isChecked = (applicationContext as App).darkTheme
-
-        themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
-            (applicationContext as App).switchTheme(checked)
+        viewModel.themeSettingsLiveData.observe(this) { themeSettings ->
+            binding.themeSwitcher.isChecked = themeSettings.darkTheme
         }
+
+        binding.themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
+            viewModel.switchTheme(checked)
+        }
+
     }
 }
