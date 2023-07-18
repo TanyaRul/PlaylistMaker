@@ -6,15 +6,20 @@ import com.example.playlistmaker.search.data.repository.TracksRepository
 import com.example.playlistmaker.search.domain.model.Track
 import java.util.concurrent.Executors
 
-class TracksInteractorImpl (private val repository: TracksRepository) : TracksInteractor {
+class TracksInteractorImpl(private val repository: TracksRepository) : TracksInteractor {
 
     private val executor = Executors.newCachedThreadPool()
 
     override fun search(text: String, consumer: TracksInteractor.TracksConsumer) {
         executor.execute {
-            when(val resource = repository.search(text)) {
-                is Resource.Success -> { consumer.consume(resource.data, null) }
-                is Resource.Error -> { consumer.consume(null, resource.message) }
+            when (val resource = repository.search(text)) {
+                is Resource.Success -> {
+                    consumer.consume(resource.data, null)
+                }
+
+                is Resource.Error -> {
+                    consumer.consume(null, resource.message)
+                }
             }
         }
     }
@@ -24,7 +29,7 @@ class TracksInteractorImpl (private val repository: TracksRepository) : TracksIn
     }
 
     override fun saveSearchHistory(tracks: List<Track>) {
-       return repository.saveSearchHistory(tracks)
+        return repository.saveSearchHistory(tracks)
     }
 
     override fun clearSearchHistory() {

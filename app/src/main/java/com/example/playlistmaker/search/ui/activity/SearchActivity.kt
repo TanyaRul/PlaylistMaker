@@ -7,10 +7,9 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.R
 import com.example.playlistmaker.player.ui.activity.PlayerActivity
@@ -21,19 +20,20 @@ import com.example.playlistmaker.search.ui.TrackAdapter
 import com.example.playlistmaker.search.ui.TrackScreenState
 import com.example.playlistmaker.search.ui.view_model.TracksSearchViewModel
 
-class SearchActivity : ComponentActivity() {
+class SearchActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySearchBinding
     private lateinit var tracksSearchViewModel: TracksSearchViewModel
     private val handler = Handler(Looper.getMainLooper())
-    private val trackList = ArrayList<Track>()
     private var isClickAllowed = true
     private var textWatcher: TextWatcher? = null
+
     private var searchText: String = ""
+    private val trackList = ArrayList<Track>()
     private var searchHistoryList = ArrayList<Track>()
 
+    //клик на трек, добаление его в историю и переход на экран плееера
     private val trackAdapter = TrackAdapter(trackList) {
-        //searchHistory.addTrackToHistory(it)
         tracksSearchViewModel.addTrackToHistory(it)
         if (clickDebounce()) {
             val playerIntent = Intent(this, PlayerActivity::class.java)
@@ -47,18 +47,38 @@ class SearchActivity : ComponentActivity() {
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
+        //создание ViewModel
         tracksSearchViewModel = ViewModelProvider(
             this,
             TracksSearchViewModel.getViewModelFactory()
         )[TracksSearchViewModel::class.java]
 
-
-        Log.d("TEST", "activity created")
-
+        //складываем в recyclerView значения из адаптера
         binding.recyclerViewTrackList.adapter = trackAdapter
 
+        //подписка на изменение состояния экрана поиска
+        tracksSearchViewModel.observeState().observe(this) {
+            render(it)
+        }
 
+        //извлечение истории поиска из sharedPrefs
+        tracksSearchViewModel.fillHistory()
+
+        //подписка на изменение истории поиска
+        tracksSearchViewModel.historyLiveData.observe(this) { historyTrackList ->
+            searchHistoryList = historyTrackList
+        }
+
+        //клик в поле ввода поискового запроса
+        binding.inputEditText.setOnFocusChangeListener { view, hasFocus ->
+            if (hasFocus && binding.inputEditText.text.isEmpty() && searchHistoryList.isNotEmpty()) {
+                showHistoryScreen()
+            } else {
+                hideHistoryScreen()
+            }
+        }
+
+        //изменение текста в поле ввода поискового запроса
         textWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
@@ -71,16 +91,15 @@ class SearchActivity : ComponentActivity() {
                 )
                 if (!s.isNullOrEmpty()) {
                     binding.recyclerViewTrackList.visibility = View.VISIBLE
-                    //trackList.clear()
-                    //trackAdapter.trackList = trackList
-
+                    trackList.clear()
+                    trackAdapter.trackList = trackList
                     hideHistoryScreen()
                 }
+
                 tracksSearchViewModel.fillHistory()
+
                 if (s?.isEmpty() == true && searchHistoryList.isNotEmpty()) {
                     showHistoryScreen()
-                    binding.recyclerViewTrackList.visibility = View.VISIBLE
-                    binding.placeholderScreen.visibility = View.GONE
                 } else {
                     binding.recyclerViewTrackList.visibility = View.GONE
                     binding.placeholderScreen.visibility = View.GONE
@@ -92,47 +111,31 @@ class SearchActivity : ComponentActivity() {
         }
         textWatcher?.let { binding.inputEditText.addTextChangedListener(it) }
 
-        tracksSearchViewModel.observeState().observe(this) {
-            render(it)
-        }
-
-        binding.inputEditText.setOnFocusChangeListener { view, hasFocus ->
-            if (hasFocus && binding.inputEditText.text.isEmpty() && searchHistoryList.isNotEmpty()) {
-                showHistoryScreen()
-            } else {
-                hideHistoryScreen()
-            }
-            trackAdapter.trackList = searchHistoryList
-            trackAdapter.notifyDataSetChanged()
-        }
-
+        //клик на кнопку очистить поле ввода поискового запроса
         binding.clearSearchText.setOnClickListener {
-            tracksSearchViewModel.clearSearchText()
             binding.inputEditText.setText("")
             val inputMethodManager =
                 getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             inputMethodManager?.hideSoftInputFromWindow(binding.inputEditText.windowToken, 0)
-            trackList.clear()
-            binding.placeholderScreen.visibility = View.INVISIBLE
-            trackAdapter.notifyDataSetChanged()
-            tracksSearchViewModel.fillHistory()
+
             if (searchHistoryList.isNotEmpty()) {
-                binding.recyclerViewTrackList.visibility = View.VISIBLE
                 showHistoryScreen()
             } else {
                 hideHistoryScreen()
             }
-
         }
 
+        //клик на кнопку назад
         binding.backToSettings.setOnClickListener {
             finish()
         }
 
+        //клик на кнопку обновить поиск
         binding.refreshButton.setOnClickListener {
             tracksSearchViewModel.searchTrack(searchText)
         }
 
+        //клик на кнопку очистить историю поиска
         binding.clearHistoryButton.setOnClickListener {
             hideHistoryScreen()
             binding.recyclerViewTrackList.visibility = View.VISIBLE
@@ -142,11 +145,13 @@ class SearchActivity : ComponentActivity() {
 
     }
 
+    //уничтожение активити
     override fun onDestroy() {
         super.onDestroy()
         textWatcher?.let { binding.inputEditText.removeTextChangedListener(it) }
     }
 
+    //изменение видимости кнопки очистить строку поиска
     private fun clearButtonVisibility(s: CharSequence?): Int {
         return if (s.isNullOrEmpty()) {
             View.GONE
@@ -155,6 +160,7 @@ class SearchActivity : ComponentActivity() {
         }
     }
 
+    //клик с задержкой
     private fun clickDebounce(): Boolean {
         val current = isClickAllowed
         if (isClickAllowed) {
@@ -164,6 +170,7 @@ class SearchActivity : ComponentActivity() {
         return current
     }
 
+    //показываем нужные элементы в зависимости от состояния экрана поиска
     private fun render(state: TrackScreenState) {
         when (state) {
             is TrackScreenState.Loading -> showLoading()
@@ -184,24 +191,30 @@ class SearchActivity : ComponentActivity() {
         }
     }
 
+    //показать экран истории поиска
     private fun showHistoryScreen() {
         binding.searchHistoryTextView.visibility = View.VISIBLE
         binding.clearHistoryButton.visibility = View.VISIBLE
+        binding.recyclerViewTrackList.visibility = View.VISIBLE
+        binding.placeholderScreen.visibility = View.GONE
         trackAdapter.trackList = searchHistoryList
         trackAdapter.notifyDataSetChanged()
     }
 
+    //скрыть экран истории поиска
     private fun hideHistoryScreen() {
         binding.searchHistoryTextView.visibility = View.GONE
         binding.clearHistoryButton.visibility = View.GONE
     }
 
+    //показать загрузку
     private fun showLoading() {
         binding.recyclerViewTrackList.visibility = View.GONE
         binding.placeholderScreen.visibility = View.GONE
         binding.progressBar.visibility = View.VISIBLE
     }
 
+    //показать ошибку
     private fun showError(errorMessage: String) {
         binding.recyclerViewTrackList.visibility = View.GONE
         binding.placeholderScreen.visibility = View.VISIBLE
@@ -212,32 +225,34 @@ class SearchActivity : ComponentActivity() {
         hideHistoryScreen()
     }
 
+    //показать пустой результат поиска
     private fun showEmpty(emptyMessage: String) {
         showError(emptyMessage)
     }
 
+    //показать найденные результаты
     private fun showContent(trackList: List<Track>) {
         binding.recyclerViewTrackList.visibility = View.VISIBLE
         binding.placeholderScreen.visibility = View.GONE
         binding.progressBar.visibility = View.GONE
         binding.searchHistoryTextView.visibility = View.GONE
         binding.clearHistoryButton.visibility = View.GONE
-
         trackAdapter.trackList.clear()
         trackAdapter.trackList.addAll(trackList)
         trackAdapter.notifyDataSetChanged()
     }
 
+    //сохранить состояние экрана и текст запроса
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(SEARCH_TEXT, searchText)
     }
 
+    //восстановить состояние экрана и текст запроса
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         searchText = savedInstanceState.getString(SEARCH_TEXT).toString()
     }
-
 
     companion object {
         const val SEARCH_TEXT = "SEARCH_TEXT"

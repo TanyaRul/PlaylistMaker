@@ -29,8 +29,8 @@ object Creator {
         return TracksInteractorImpl(getTracksRepository(context))
     }
 
-    fun providePlayerInteractor(context: Context): PlayerInteractor {
-        return PlayerInteractorImpl(PlayerRepositoryImpl(context))
+    fun providePlayerInteractor(): PlayerInteractor {
+        return PlayerInteractorImpl(PlayerRepositoryImpl())
     }
 
     fun provideSharingInteractor(context: Context): SharingInteractor {

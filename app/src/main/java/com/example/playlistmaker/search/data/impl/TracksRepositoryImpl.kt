@@ -6,7 +6,6 @@ import com.example.playlistmaker.search.data.dto.TracksSearchRequest
 import com.example.playlistmaker.search.data.dto.TracksSearchResponse
 import com.example.playlistmaker.search.data.repository.TracksRepository
 import com.example.playlistmaker.search.data.storage.SearchHistoryStorage
-import com.example.playlistmaker.search.data.storage.SearchHistoryTrack
 import com.example.playlistmaker.search.domain.model.Track
 
 class TracksRepositoryImpl(
@@ -63,8 +62,7 @@ class TracksRepositoryImpl(
     }
 
     override fun saveSearchHistory(tracks: List<Track>) {
-        val _tracks: ArrayList<SearchHistoryTrack> = searchHistoryStorage.readSearchHistory()
-        searchHistoryStorage.saveSearchHistory(_tracks)
+        searchHistoryStorage.saveSearchHistory(tracks as ArrayList<Track>)
     }
 
     override fun clearSearchHistory() {

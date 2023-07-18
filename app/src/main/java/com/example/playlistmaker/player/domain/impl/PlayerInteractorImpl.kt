@@ -2,6 +2,7 @@ package com.example.playlistmaker.player.domain.impl
 
 import com.example.playlistmaker.player.data.repository.PlayerRepository
 import com.example.playlistmaker.player.domain.PlayerInteractor
+import com.example.playlistmaker.player.domain.model.PlayerState
 
 class PlayerInteractorImpl(private val repository: PlayerRepository) : PlayerInteractor {
 
@@ -17,8 +18,16 @@ class PlayerInteractorImpl(private val repository: PlayerRepository) : PlayerInt
         repository.pausePlayer()
     }
 
-    override fun release() {
-        repository.release()
+    override fun releasePlayer() {
+        repository.releasePlayer()
+    }
+
+    override fun currentPosition(): Int {
+        return repository.currentPosition()
+    }
+
+    override fun changePlayerState(newState: (PlayerState) -> Unit) {
+        repository.changePlayerState(newState)
     }
 
 }

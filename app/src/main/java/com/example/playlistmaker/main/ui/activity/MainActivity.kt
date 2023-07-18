@@ -20,10 +20,14 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        viewModel = ViewModelProvider(this, MainViewModel.getViewModelFactory())[MainViewModel::class.java]
+        viewModel = ViewModelProvider(
+            this,
+            MainViewModel.getViewModelFactory()
+        )[MainViewModel::class.java]
 
-        viewModel.observeSetTheme().observe(this) {
+        if (viewModel.itFirstTime) {
             viewModel.setTheme()
+            viewModel.itFirstTime = false
         }
 
         binding.search.setOnClickListener {

@@ -13,17 +13,16 @@ class SettingsRepositoryImpl(val context: Context) : SettingsRepository {
 
     override fun getThemeSettings(): ThemeSettings {
         return ThemeSettings(darkTheme)
-
     }
 
     override fun setThemeSettings() {
-            AppCompatDelegate.setDefaultNightMode(
-                if (darkTheme) {
-                    AppCompatDelegate.MODE_NIGHT_YES
-                } else {
-                    AppCompatDelegate.MODE_NIGHT_NO
-                }
-            )
+        AppCompatDelegate.setDefaultNightMode(
+            if (darkTheme) {
+                AppCompatDelegate.MODE_NIGHT_YES
+            } else {
+                AppCompatDelegate.MODE_NIGHT_NO
+            }
+        )
     }
 
     override fun updateThemeSettings(settings: ThemeSettings) {
@@ -40,7 +39,7 @@ class SettingsRepositoryImpl(val context: Context) : SettingsRepository {
     }
 
     companion object {
-        const val SETTINGS_PREFS ="settings_prefs"
+        const val SETTINGS_PREFS = "settings_prefs"
         const val SWITCH_KEY = "key_for_switch"
     }
 

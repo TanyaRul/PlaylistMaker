@@ -2,7 +2,7 @@ package com.example.playlistmaker.player.ui.activity
 
 import android.os.Bundle
 import android.view.View
-import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -14,21 +14,15 @@ import com.example.playlistmaker.player.ui.view_model.PlayerViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
-class PlayerActivity : ComponentActivity() {
+class PlayerActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityPlayerBinding
     private lateinit var viewModel: PlayerViewModel
-
-    private var playerState = PlayerState.STATE_DEFAULT
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        binding.backToSearch.setOnClickListener {
-            finish()
-        }
 
         viewModel = ViewModelProvider(
             this,
@@ -37,19 +31,39 @@ class PlayerActivity : ComponentActivity() {
 
         val track = intent.getParcelableExtra<PlayerTrack>(TRACK_DATA_KEY)
 
+
         if (track != null) {
             fillTrackItem(track, binding)
             if (track.previewUrl?.isNotEmpty() == true) {
+                binding.playbackProgress.text = getString(R.string.playback_progress_start)
+                binding.playbackControlButton.setImageResource(R.drawable.play_button)
                 viewModel.prepare(track.previewUrl)
             }
         }
 
-        binding.playbackControlButton.setOnClickListener {
-            if (track != null) {
-                if (track.previewUrl.isNullOrEmpty()) {
-                    binding.playbackControlButton.isEnabled = false
-                } else playbackControl(track)
+        viewModel.playerStateLiveData.observe(this) { playerState ->
+            binding.playbackControlButton.setOnClickListener {
+                if (track != null) {
+                    if (track.previewUrl.isNullOrEmpty()) {
+                        binding.playbackControlButton.isEnabled = false
+
+                    } else {
+                        playbackControl(playerState)
+                    }
+                }
             }
+            if (playerState == PlayerState.STATE_COMPLETE) {
+                binding.playbackProgress.text = getString(R.string.playback_progress_start)
+                pausePlayer()
+            }
+        }
+
+        viewModel.getCurrentTimerLiveData().observe(this) { currentTimer ->
+            changeTimer(currentTimer)
+        }
+
+        binding.backToSearch.setOnClickListener {
+            finish()
         }
 
     }
@@ -86,54 +100,49 @@ class PlayerActivity : ComponentActivity() {
     private fun getFormattedYear(track: PlayerTrack): String {
         val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
         val calendar: Calendar = Calendar.getInstance()
-        calendar.time = format.parse(track.releaseDate) as Date
+        calendar.time = track.releaseDate?.let { format.parse(it) } as Date
         return calendar.get(Calendar.YEAR).toString()
     }
 
-    fun preparePlayer(url: String) {
-        binding.playbackProgress.text = getString(R.string.playback_progress_start)
-        binding.playbackControlButton.setImageResource(R.drawable.play_button)
+    private fun changeTimer(currentTimer: Int) {
+        binding.playbackProgress.text =
+            SimpleDateFormat("mm:ss", Locale.getDefault()).format(currentTimer)
     }
 
 
-    private fun startPlayer(track: PlayerTrack) {
-        if (track.previewUrl?.isNotEmpty() == true) {
-            viewModel.play()
-            binding.playbackControlButton.setImageResource(R.drawable.pause_button)
-        }
+    private fun startPlayer() {
+        binding.playbackControlButton.setImageResource(R.drawable.pause_button)
+        viewModel.play()
     }
 
     private fun pausePlayer() {
         binding.playbackControlButton.setImageResource(R.drawable.play_button)
-        binding.playbackControlButton.setImageResource(R.drawable.play_button)
         viewModel.pause()
     }
 
-    private fun playbackControl(track: PlayerTrack) {
-        when (playerState) {
+    private fun playbackControl(state: PlayerState) {
+        when (state) {
+            PlayerState.STATE_DEFAULT -> {}
+
             PlayerState.STATE_PLAYING -> {
                 pausePlayer()
             }
 
-            PlayerState.STATE_PREPARED, PlayerState.STATE_PAUSED -> {
-                startPlayer(track)
+            PlayerState.STATE_PREPARED, PlayerState.STATE_PAUSED, PlayerState.STATE_COMPLETE -> {
+                startPlayer()
             }
-
-            else -> {}
         }
     }
 
     override fun onPause() {
         super.onPause()
-        viewModel.pause()
+        pausePlayer()
     }
 
     override fun onDestroy() {
         super.onDestroy()
         viewModel.release()
-        //handler.removeCallbacks(playbackProgressRunnable)
     }
-
 
     companion object {
         const val TRACK_DATA_KEY = "key_for_track_data"

@@ -11,7 +11,6 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.settings.domain.model.ThemeSettings
 
-
 class SettingsViewModel(application: Application) : AndroidViewModel(application) {
 
     private val sharingInteractor = Creator.provideSharingInteractor(getApplication())

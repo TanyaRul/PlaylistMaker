@@ -4,7 +4,6 @@ import android.app.Application
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
@@ -21,28 +20,27 @@ import com.example.playlistmaker.search.ui.TrackScreenState
 
 class TracksSearchViewModel(application: Application) : AndroidViewModel(application) {
 
-    init {
-        Log.d("TEST", "vm created")
-    }
-
     private var historyTrackList = ArrayList<Track>()
     private val tracksInteractor = Creator.provideTracksInteractor(getApplication())
     private val handler = Handler(Looper.getMainLooper())
 
-    private val _stateLiveData = MutableLiveData<TrackScreenState>()
-    val stateLiveData: LiveData<TrackScreenState> = _stateLiveData
+    private val _searchStateLiveData = MutableLiveData<TrackScreenState>()
+    fun observeState(): LiveData<TrackScreenState> = mediatorStateLiveData
+
+    private var _historyLiveData = MutableLiveData<ArrayList<Track>>()
+    val historyLiveData: LiveData<ArrayList<Track>> = _historyLiveData
 
     init {
         historyTrackList.addAll(tracksInteractor.readSearchHistory())
+        _historyLiveData.postValue(historyTrackList)
     }
 
     private var latestSearchText: String? = null
 
-
     private val mediatorStateLiveData = MediatorLiveData<TrackScreenState>().also { liveData ->
-        liveData.addSource(_stateLiveData) { trackState ->
+        liveData.addSource(_searchStateLiveData) { trackState ->
             liveData.value = when (trackState) {
-                is TrackScreenState.Content -> TrackScreenState.Content(trackState.trackList) //.sortedByDescending { it.inFavorite }
+                is TrackScreenState.Content -> TrackScreenState.Content(trackState.trackList)
                 is TrackScreenState.Empty -> trackState
                 is TrackScreenState.Error -> trackState
                 is TrackScreenState.Loading -> trackState
@@ -50,14 +48,13 @@ class TracksSearchViewModel(application: Application) : AndroidViewModel(applica
         }
     }
 
-    fun observeState(): LiveData<TrackScreenState> = mediatorStateLiveData
-
     override fun onCleared() {
         super.onCleared()
         tracksInteractor.saveSearchHistory(historyTrackList)
         handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
     }
 
+    //добавление трека в историю
     fun addTrackToHistory(track: Track) {
         historyTrackList = tracksInteractor.readSearchHistory() as ArrayList<Track>
         historyTrackList.remove(track)
@@ -66,9 +63,10 @@ class TracksSearchViewModel(application: Application) : AndroidViewModel(applica
         }
         historyTrackList.add(0, track)
         tracksInteractor.saveSearchHistory(historyTrackList)
-
+        _historyLiveData.postValue(historyTrackList)
     }
 
+    //поиск с задержкой
     fun searchDebounce(changedText: String) {
         if (latestSearchText == changedText) {
             return
@@ -87,6 +85,7 @@ class TracksSearchViewModel(application: Application) : AndroidViewModel(applica
         )
     }
 
+    //очистить историю поиска
     fun clearHistory() {
         tracksInteractor.clearSearchHistory()
         historyTrackList.clear()
@@ -97,19 +96,14 @@ class TracksSearchViewModel(application: Application) : AndroidViewModel(applica
         )
     }
 
-    fun clearSearchText() {
-        renderState(
-            TrackScreenState.Content(
-                trackList = historyTrackList,
-            )
-        )
-    }
-
+    //извлечь историю поиска из sharedPrefs
     fun fillHistory() {
         historyTrackList.clear()
         historyTrackList.addAll(tracksInteractor.readSearchHistory())
+        _historyLiveData.postValue(historyTrackList)
     }
 
+    //поиск трека
     fun searchTrack(newSearchText: String) {
         if (newSearchText.isNotEmpty()) {
             renderState(TrackScreenState.Loading)
@@ -151,8 +145,9 @@ class TracksSearchViewModel(application: Application) : AndroidViewModel(applica
         }
     }
 
+    //передаем состояние экрана
     private fun renderState(state: TrackScreenState) {
-        _stateLiveData.postValue(state)
+        _searchStateLiveData.postValue(state)
     }
 
     companion object {
