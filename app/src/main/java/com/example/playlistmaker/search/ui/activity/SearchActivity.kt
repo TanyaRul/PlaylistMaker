@@ -10,20 +10,20 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.R
-import com.example.playlistmaker.player.ui.activity.PlayerActivity
 import com.example.playlistmaker.databinding.ActivitySearchBinding
+import com.example.playlistmaker.player.ui.activity.PlayerActivity
 import com.example.playlistmaker.player.ui.model.PlayerTrack
 import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.search.ui.TrackAdapter
 import com.example.playlistmaker.search.ui.TrackScreenState
 import com.example.playlistmaker.search.ui.view_model.TracksSearchViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySearchBinding
-    private lateinit var tracksSearchViewModel: TracksSearchViewModel
+    private val tracksSearchViewModel by viewModel<TracksSearchViewModel>()
     private val handler = Handler(Looper.getMainLooper())
     private var isClickAllowed = true
     private var textWatcher: TextWatcher? = null
@@ -46,12 +46,6 @@ class SearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        //создание ViewModel
-        tracksSearchViewModel = ViewModelProvider(
-            this,
-            TracksSearchViewModel.getViewModelFactory()
-        )[TracksSearchViewModel::class.java]
 
         //складываем в recyclerView значения из адаптера
         binding.recyclerViewTrackList.adapter = trackAdapter

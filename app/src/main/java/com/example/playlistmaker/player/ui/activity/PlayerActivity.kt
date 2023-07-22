@@ -1,9 +1,9 @@
 package com.example.playlistmaker.player.ui.activity
 
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
@@ -11,45 +11,45 @@ import com.example.playlistmaker.databinding.ActivityPlayerBinding
 import com.example.playlistmaker.player.domain.model.PlayerState
 import com.example.playlistmaker.player.ui.model.PlayerTrack
 import com.example.playlistmaker.player.ui.view_model.PlayerViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 class PlayerActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityPlayerBinding
-    private lateinit var viewModel: PlayerViewModel
+
+    private val viewModel by viewModel<PlayerViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        viewModel = ViewModelProvider(
-            this,
-            PlayerViewModel.getViewModelFactory()
-        )[PlayerViewModel::class.java]
+        val track =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                intent.getParcelableExtra(TRACK_DATA_KEY, PlayerTrack::class.java)
+            } else {
+                intent.getParcelableExtra(TRACK_DATA_KEY)
+            } as PlayerTrack
 
-        val track = intent.getParcelableExtra<PlayerTrack>(TRACK_DATA_KEY)
 
-
-        if (track != null) {
-            fillTrackItem(track, binding)
-            if (track.previewUrl?.isNotEmpty() == true) {
-                binding.playbackProgress.text = getString(R.string.playback_progress_start)
-                binding.playbackControlButton.setImageResource(R.drawable.play_button)
-                viewModel.prepare(track.previewUrl)
-            }
+        fillTrackItem(track, binding)
+        if (track.previewUrl?.isNotEmpty() == true) {
+            binding.playbackProgress.text = getString(R.string.playback_progress_start)
+            binding.playbackControlButton.setImageResource(R.drawable.play_button)
+            viewModel.prepare(track.previewUrl)
         }
 
         viewModel.playerStateLiveData.observe(this) { playerState ->
             binding.playbackControlButton.setOnClickListener {
-                if (track != null) {
-                    if (track.previewUrl.isNullOrEmpty()) {
-                        binding.playbackControlButton.isEnabled = false
+                if (track.previewUrl.isNullOrEmpty()) {
+                    binding.playbackControlButton.isEnabled = false
 
-                    } else {
-                        playbackControl(playerState)
-                    }
+                } else {
+                    playbackControl(playerState)
                 }
             }
             if (playerState == PlayerState.STATE_COMPLETE) {
@@ -122,8 +122,6 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun playbackControl(state: PlayerState) {
         when (state) {
-            PlayerState.STATE_DEFAULT -> {}
-
             PlayerState.STATE_PLAYING -> {
                 pausePlayer()
             }
@@ -137,11 +135,6 @@ class PlayerActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         pausePlayer()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        viewModel.release()
     }
 
     companion object {
