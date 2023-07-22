@@ -34,7 +34,6 @@ class PlayerRepositoryImpl(private val mediaPlayer: MediaPlayer) : PlayerReposit
 
     override fun releasePlayer() {
         mediaPlayer.release()
-        //mediaPlayer.reset()
     }
 
     override fun currentPosition(): Int {
