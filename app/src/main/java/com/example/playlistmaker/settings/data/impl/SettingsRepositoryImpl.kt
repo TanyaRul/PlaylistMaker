@@ -7,9 +7,10 @@ import com.example.playlistmaker.settings.domain.model.ThemeSettings
 
 class SettingsRepositoryImpl(private val sharedPrefs: SharedPreferences) : SettingsRepository {
 
-    val darkTheme = sharedPrefs.getBoolean(SWITCH_KEY, false)
+    var darkTheme = sharedPrefs.getBoolean(SWITCH_KEY, false)
 
     override fun getThemeSettings(): ThemeSettings {
+        darkTheme = sharedPrefs.getBoolean(SWITCH_KEY, false)
         return ThemeSettings(darkTheme)
     }
 
@@ -31,6 +32,7 @@ class SettingsRepositoryImpl(private val sharedPrefs: SharedPreferences) : Setti
                 AppCompatDelegate.MODE_NIGHT_NO
             }
         )
+
         sharedPrefs.edit()
             .putBoolean(SWITCH_KEY, settings.darkTheme)
             .apply()
