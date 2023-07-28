@@ -1,14 +1,12 @@
 package com.example.playlistmaker.settings.data.impl
 
-import android.content.Context
-import android.content.Context.MODE_PRIVATE
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
 import com.example.playlistmaker.settings.data.repository.SettingsRepository
 import com.example.playlistmaker.settings.domain.model.ThemeSettings
 
-class SettingsRepositoryImpl(val context: Context) : SettingsRepository {
+class SettingsRepositoryImpl(private val sharedPrefs: SharedPreferences) : SettingsRepository {
 
-    val sharedPrefs = context.getSharedPreferences(SETTINGS_PREFS, MODE_PRIVATE)
     val darkTheme = sharedPrefs.getBoolean(SWITCH_KEY, false)
 
     override fun getThemeSettings(): ThemeSettings {

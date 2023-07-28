@@ -1,15 +1,9 @@
 package com.example.playlistmaker.main.ui.view_model
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.playlistmaker.creator.Creator
+import androidx.lifecycle.ViewModel
+import com.example.playlistmaker.settings.domain.SettingsInteractor
 
-class MainViewModel(application: Application) : AndroidViewModel(application) {
-
-    private val settingsInteractor = Creator.provideSettingsInteractor(application)
+class MainViewModel(private val settingsInteractor: SettingsInteractor) : ViewModel() {
 
     var itFirstTime = true
 
@@ -17,11 +11,4 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         settingsInteractor.setThemeSettings()
     }
 
-    companion object {
-        fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                MainViewModel(this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as Application)
-            }
-        }
-    }
 }

@@ -1,21 +1,15 @@
 package com.example.playlistmaker.player.ui.view_model
 
-import android.app.Application
 import android.os.Handler
 import android.os.Looper
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.playlistmaker.creator.Creator
+import androidx.lifecycle.ViewModel
+import com.example.playlistmaker.player.domain.PlayerInteractor
 import com.example.playlistmaker.player.domain.model.PlayerState
 
-class PlayerViewModel(application: Application) : AndroidViewModel(application) {
+class PlayerViewModel(private val playerInteractor: PlayerInteractor) : ViewModel() {
 
-    private val playerInteractor = Creator.providePlayerInteractor()
     private val handler = Handler(Looper.getMainLooper())
     private val playbackProgressRunnable = createUpdateTimerTask()
 
@@ -59,24 +53,13 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
         handler.removeCallbacks(playbackProgressRunnable)
     }
 
-    fun release() {
-        playerInteractor.releasePlayer()
-        handler.removeCallbacks(playbackProgressRunnable)
-    }
-
     override fun onCleared() {
         super.onCleared()
-        release()
+        playerInteractor.releasePlayer()
         handler.removeCallbacks(playbackProgressRunnable)
     }
 
     companion object {
         private const val UPDATE_PLAYBACK_PROGRESS_DELAY_MS = 500L
-
-        fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                PlayerViewModel(this[APPLICATION_KEY] as Application)
-            }
-        }
     }
 }

@@ -3,7 +3,6 @@ package com.example.playlistmaker.player.data.repository
 import com.example.playlistmaker.player.domain.model.PlayerState
 
 interface PlayerRepository {
-
     fun preparePlayer(url: String)
     fun startPlayer()
     fun pausePlayer()
