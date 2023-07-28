@@ -20,7 +20,7 @@ val viewModelModule = module {
     }
 
     viewModel {
-        TracksSearchViewModel(context = get(), tracksInteractor = get())
+        TracksSearchViewModel(application = get(), tracksInteractor = get())
     }
 
     viewModel {

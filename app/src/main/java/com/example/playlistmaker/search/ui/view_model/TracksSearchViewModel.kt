@@ -14,7 +14,7 @@ import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.search.ui.TrackScreenState
 
 class TracksSearchViewModel(
-    private val context: Application,
+    private val application: Application,
     private val tracksInteractor: TracksInteractor
 ) : ViewModel() {
 
@@ -117,7 +117,7 @@ class TracksSearchViewModel(
                         errorMessage != null -> {
                             renderState(
                                 TrackScreenState.Error(
-                                    errorMessage = context.getString(R.string.no_connection),
+                                    errorMessage = application.getString(R.string.no_connection),
                                 )
                             )
                         }
@@ -125,7 +125,7 @@ class TracksSearchViewModel(
                         trackList.isEmpty() -> {
                             renderState(
                                 TrackScreenState.Empty(
-                                    message = context.getString(R.string.nothing_found),
+                                    message = application.getString(R.string.nothing_found),
                                 )
                             )
                         }
