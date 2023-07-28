@@ -4,19 +4,19 @@ import android.app.Application
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.example.playlistmaker.R
 import com.example.playlistmaker.search.domain.TracksInteractor
 import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.search.ui.TrackScreenState
 
 class TracksSearchViewModel(
-    application: Application,
+    private val context: Application,
     private val tracksInteractor: TracksInteractor
-) : AndroidViewModel(application) {
+) : ViewModel() {
 
     private var historyTrackList = ArrayList<Track>()
 
@@ -117,7 +117,7 @@ class TracksSearchViewModel(
                         errorMessage != null -> {
                             renderState(
                                 TrackScreenState.Error(
-                                    errorMessage = getApplication<Application>().getString(R.string.no_connection),
+                                    errorMessage = context.getString(R.string.no_connection),
                                 )
                             )
                         }
@@ -125,7 +125,7 @@ class TracksSearchViewModel(
                         trackList.isEmpty() -> {
                             renderState(
                                 TrackScreenState.Empty(
-                                    message = getApplication<Application>().getString(R.string.nothing_found),
+                                    message = context.getString(R.string.nothing_found),
                                 )
                             )
                         }

@@ -7,6 +7,7 @@ import com.example.playlistmaker.player.data.repository.PlayerRepository
 import com.example.playlistmaker.search.data.impl.TracksRepositoryImpl
 import com.example.playlistmaker.search.data.repository.TracksRepository
 import com.example.playlistmaker.settings.data.impl.SettingsRepositoryImpl
+import com.example.playlistmaker.settings.data.impl.SettingsRepositoryImpl.Companion.SETTINGS_PREFS
 import com.example.playlistmaker.settings.data.repository.SettingsRepository
 import com.example.playlistmaker.sharing.data.impl.ExternalNavigatorImpl
 import com.example.playlistmaker.sharing.data.repository.ExternalNavigator
@@ -33,7 +34,7 @@ val repositoryModule = module {
 
     single {
         androidContext().getSharedPreferences(
-            SettingsRepositoryImpl.SETTINGS_PREFS,
+            SETTINGS_PREFS,
             Context.MODE_PRIVATE
         )
     }
