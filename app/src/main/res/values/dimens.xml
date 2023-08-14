@@ -50,4 +50,5 @@
     <dimen name="margin_top_medium">46dp</dimen>
     <dimen name="placeholder_margin_top">106dp</dimen>
     <dimen name="viewpager_margin_top">105dp</dimen>
+    <dimen name="regular_text_size_12">12sp</dimen>
 </resources>
