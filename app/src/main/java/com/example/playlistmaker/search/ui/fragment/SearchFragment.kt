@@ -3,15 +3,13 @@ package com.example.playlistmaker.search.ui.fragment
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.player.ui.activity.PlayerActivity
@@ -20,41 +18,47 @@ import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.search.ui.TrackAdapter
 import com.example.playlistmaker.search.ui.TrackScreenState
 import com.example.playlistmaker.search.ui.view_model.TracksSearchViewModel
+import com.example.playlistmaker.util.BindingFragment
+import com.example.playlistmaker.util.debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SearchFragment : Fragment() {
+class SearchFragment : BindingFragment<FragmentSearchBinding>() {
 
-    private lateinit var binding: FragmentSearchBinding
     private val tracksSearchViewModel by viewModel<TracksSearchViewModel>()
-    private val handler = Handler(Looper.getMainLooper())
-    private var isClickAllowed = true
     private var textWatcher: TextWatcher? = null
 
     private var searchText: String = ""
     private val trackList = ArrayList<Track>()
     private var searchHistoryList = ArrayList<Track>()
 
+    private lateinit var onTrackClickDebounce: (Track) -> Unit
+
     //клик на трек, добаление его в историю и переход на экран плееера
     private val trackAdapter = TrackAdapter(trackList) {
         tracksSearchViewModel.addTrackToHistory(it)
-        if (clickDebounce()) {
-            val playerIntent = Intent(requireContext(), PlayerActivity::class.java)
-            playerIntent.putExtra(PlayerActivity.TRACK_DATA_KEY, PlayerTrack.mappingTrack(it))
-            startActivity(playerIntent)
-        }
+        onTrackClickDebounce(it)
     }
 
-    override fun onCreateView(
+    override fun createBinding(
         inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentSearchBinding.inflate(inflater, container, false)
-        return binding.root
+        container: ViewGroup?
+    ): FragmentSearchBinding {
+        return FragmentSearchBinding.inflate(inflater, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        //клик на трек с задержкой
+        onTrackClickDebounce = debounce<Track>(
+            CLICK_DEBOUNCE_DELAY_MS,
+            viewLifecycleOwner.lifecycleScope,
+            false
+        ) { track ->
+            val playerIntent = Intent(requireContext(), PlayerActivity::class.java)
+            playerIntent.putExtra(PlayerActivity.TRACK_DATA_KEY, PlayerTrack.mappingTrack(track))
+            startActivity(playerIntent)
+        }
 
         //складываем в recyclerView значения из адаптера
         binding.recyclerViewTrackList.adapter = trackAdapter
@@ -117,9 +121,7 @@ class SearchFragment : Fragment() {
         //клик на кнопку очистить поле ввода поискового запроса
         binding.clearSearchText.setOnClickListener {
             binding.inputEditText.setText("")
-            val inputMethodManager =
-                requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-            inputMethodManager?.hideSoftInputFromWindow(binding.inputEditText.windowToken, 0)
+            hideKeyboard()
 
             if (searchHistoryList.isNotEmpty()) {
                 showHistoryScreen()
@@ -127,11 +129,6 @@ class SearchFragment : Fragment() {
                 hideHistoryScreen()
             }
         }
-
-        /*//клик на кнопку назад
-        binding.backToSettings.setOnClickListener {
-            finish()
-        }*/
 
         //клик на кнопку обновить поиск
         binding.refreshButton.setOnClickListener {
@@ -148,11 +145,6 @@ class SearchFragment : Fragment() {
 
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        textWatcher?.let { binding.inputEditText.removeTextChangedListener(it) }
-    }
-
     //изменение видимости кнопки очистить строку поиска
     private fun clearButtonVisibility(s: CharSequence?): Int {
         return if (s.isNullOrEmpty()) {
@@ -162,14 +154,11 @@ class SearchFragment : Fragment() {
         }
     }
 
-    //клик с задержкой
-    private fun clickDebounce(): Boolean {
-        val current = isClickAllowed
-        if (isClickAllowed) {
-            isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY_MS)
-        }
-        return current
+    //убрать клавиатуру
+    private fun hideKeyboard() {
+        val inputMethodManager =
+            requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        inputMethodManager?.hideSoftInputFromWindow(binding.inputEditText.windowToken, 0)
     }
 
     //показываем нужные элементы в зависимости от состояния экрана поиска
@@ -237,8 +226,7 @@ class SearchFragment : Fragment() {
         binding.recyclerViewTrackList.visibility = View.VISIBLE
         binding.placeholderScreen.visibility = View.GONE
         binding.progressBar.visibility = View.GONE
-        binding.searchHistoryTextView.visibility = View.GONE
-        binding.clearHistoryButton.visibility = View.GONE
+        hideHistoryScreen()
         trackAdapter.trackList.clear()
         trackAdapter.trackList.addAll(trackList)
         trackAdapter.notifyDataSetChanged()
