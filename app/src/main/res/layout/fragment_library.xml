@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/colorSecondary"
-    tools:context=".library.ui.activity.LibraryActivity">
+    tools:context=".library.ui.fragment.LibraryFragment">
 
     <LinearLayout
         android:id="@+id/header"
@@ -19,21 +19,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageButton
-            android:id="@+id/backToMainButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:background="@null"
-            app:srcCompat="@drawable/arrow_back"
-            app:tint="?attr/colorOnPrimary" />
-
         <TextView
             android:id="@+id/libraryTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="@dimen/text_margin_start"
             android:fontFamily="@font/ys_display_medium"
             android:text="@string/library"
             android:textColor="?attr/colorOnPrimary"

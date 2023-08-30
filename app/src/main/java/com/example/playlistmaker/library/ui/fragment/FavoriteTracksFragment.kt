@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.playlistmaker.databinding.FragmentFavoriteTracksBinding
-import com.example.playlistmaker.library.ui.BindingFragment
 import com.example.playlistmaker.library.ui.view_model.FavoriteTracksViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 

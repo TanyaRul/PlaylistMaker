@@ -1,34 +1,35 @@
-package com.example.playlistmaker.library.ui.activity
+package com.example.playlistmaker.library.ui.fragment
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.ActivityLibraryBinding
+import com.example.playlistmaker.databinding.FragmentLibraryBinding
 import com.example.playlistmaker.library.ui.LibraryViewPagerAdapter
 import com.google.android.material.tabs.TabLayoutMediator
 
 const val FRAGMENT_1 = 0
 const val FRAGMENT_2 = 1
 
-class LibraryActivity : AppCompatActivity() {
-
-    private lateinit var binding: ActivityLibraryBinding
+class LibraryFragment : BindingFragment<FragmentLibraryBinding>() {
 
     private lateinit var tabMediator: TabLayoutMediator
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityLibraryBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun createBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentLibraryBinding {
+        return FragmentLibraryBinding.inflate(inflater, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         binding.viewPager.adapter = LibraryViewPagerAdapter(
-            supportFragmentManager,
+            childFragmentManager,
             lifecycle
         )
-
-        binding.backToMainButton.setOnClickListener {
-            finish()
-        }
 
         tabMediator = TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
             when (position) {
@@ -39,8 +40,8 @@ class LibraryActivity : AppCompatActivity() {
         tabMediator.attach()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         tabMediator.detach()
     }
 }
