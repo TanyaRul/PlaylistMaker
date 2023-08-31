@@ -3,21 +3,22 @@ package com.example.playlistmaker.search.domain.impl
 import com.example.playlistmaker.util.Resource
 import com.example.playlistmaker.search.domain.TracksInteractor
 import com.example.playlistmaker.search.data.repository.TracksRepository
+import com.example.playlistmaker.search.domain.model.SearchResult
 import com.example.playlistmaker.search.domain.model.Track
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class TracksInteractorImpl(private val repository: TracksRepository) : TracksInteractor {
 
-    override fun search(text: String): Flow<Pair<List<Track>?, String?>> {
+    override fun search(text: String): Flow<SearchResult<List<Track>?, String?>> {
         return repository.search(text).map { result ->
             when (result) {
                 is Resource.Success -> {
-                    Pair(result.data, null)
+                    SearchResult(result.data, null)
                 }
 
                 is Resource.Error -> {
-                    Pair(null, result.message)
+                    SearchResult(null, result.message)
                 }
             }
         }

@@ -17,7 +17,7 @@ import org.koin.dsl.module
 val repositoryModule = module {
 
     single<TracksRepository> {
-        TracksRepositoryImpl(networkClient = get(), searchHistoryStorage = get())
+        TracksRepositoryImpl(networkClient = get(), searchHistoryStorage = get(), context = get())
     }
 
     factory<PlayerRepository> {

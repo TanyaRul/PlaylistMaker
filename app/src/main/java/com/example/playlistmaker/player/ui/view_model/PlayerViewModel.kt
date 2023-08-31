@@ -15,6 +15,8 @@ class PlayerViewModel(private val playerInteractor: PlayerInteractor) : ViewMode
 
     private var timerJob: Job? = null
 
+    private var isPlayerCreated = false
+
     private var currentTimerLiveData = MutableLiveData(0)
     fun getCurrentTimerLiveData(): LiveData<Int> = currentTimerLiveData
 
@@ -40,7 +42,10 @@ class PlayerViewModel(private val playerInteractor: PlayerInteractor) : ViewMode
 
     fun prepare(url: String) {
         timerJob?.cancel()
-        playerInteractor.preparePlayer(url)
+        if (!isPlayerCreated) {
+            playerInteractor.preparePlayer(url)
+        }
+        isPlayerCreated = true
     }
 
     fun play() {

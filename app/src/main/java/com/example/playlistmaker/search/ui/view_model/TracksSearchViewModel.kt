@@ -101,7 +101,7 @@ class TracksSearchViewModel(
                 tracksInteractor
                     .search(newSearchText)
                     .collect { pair ->
-                        processResult(pair.first, pair.second)
+                        processResult(pair.resultList, pair.error)
                     }
             }
         }

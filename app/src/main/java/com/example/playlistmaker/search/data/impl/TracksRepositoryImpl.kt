@@ -1,5 +1,7 @@
 package com.example.playlistmaker.search.data.impl
 
+import android.content.Context
+import com.example.playlistmaker.R
 import com.example.playlistmaker.search.data.network.NetworkClient
 import com.example.playlistmaker.util.Resource
 import com.example.playlistmaker.search.data.dto.TracksSearchRequest
@@ -13,6 +15,7 @@ import kotlinx.coroutines.flow.flow
 class TracksRepositoryImpl(
     private val networkClient: NetworkClient,
     private val searchHistoryStorage: SearchHistoryStorage,
+    private val context: Context,
 ) : TracksRepository {
 
     override fun search(text: String): Flow<Resource<List<Track>>> = flow {
@@ -20,7 +23,7 @@ class TracksRepositoryImpl(
 
         when (response.resultCode) {
             ERROR_NO_CONNECTION -> {
-                emit(Resource.Error("Проверьте подключение к интернету"))
+                emit(Resource.Error(context.getString(R.string.no_connection_message)))
             }
 
             SEARCH_SUCCESS -> {
@@ -44,7 +47,7 @@ class TracksRepositoryImpl(
             }
 
             else -> {
-                emit(Resource.Error("Ошибка сервера"))
+                emit(Resource.Error(context.getString(R.string.server_error_message)))
             }
         }
     }
