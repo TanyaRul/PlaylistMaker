@@ -19,10 +19,7 @@ class RootActivity : AppCompatActivity() {
         binding = ActivityRootBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        if (viewModel.itFirstTime) {
-            viewModel.setTheme()
-            viewModel.itFirstTime = false
-        }
+        viewModel.setTheme()
 
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.rootFragmentContainerView) as NavHostFragment

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentLibraryBinding
 import com.example.playlistmaker.library.ui.LibraryViewPagerAdapter
+import com.example.playlistmaker.util.BindingFragment
 import com.google.android.material.tabs.TabLayoutMediator
 
 const val FRAGMENT_1 = 0
@@ -14,7 +15,7 @@ const val FRAGMENT_2 = 1
 
 class LibraryFragment : BindingFragment<FragmentLibraryBinding>() {
 
-    private lateinit var tabMediator: TabLayoutMediator
+    private var tabMediator: TabLayoutMediator? = null
 
     override fun createBinding(
         inflater: LayoutInflater,
@@ -37,11 +38,11 @@ class LibraryFragment : BindingFragment<FragmentLibraryBinding>() {
                 FRAGMENT_2 -> tab.text = getString(R.string.playlists)
             }
         }
-        tabMediator.attach()
+        tabMediator?.attach()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        tabMediator.detach()
+        tabMediator?.detach()
     }
 }

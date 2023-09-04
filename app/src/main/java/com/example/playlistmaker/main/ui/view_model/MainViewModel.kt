@@ -8,7 +8,10 @@ class MainViewModel(private val settingsInteractor: SettingsInteractor) : ViewMo
     var itFirstTime = true
 
     fun setTheme() {
-        settingsInteractor.setThemeSettings()
+        if (itFirstTime) {
+            settingsInteractor.setThemeSettings()
+            itFirstTime = false
+        }
     }
 
 }

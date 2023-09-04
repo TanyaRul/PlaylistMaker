@@ -1,17 +1,17 @@
 package com.example.playlistmaker.search.ui.view_model
 
 import android.app.Application
-import android.os.Handler
-import android.os.Looper
-import android.os.SystemClock
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.R
 import com.example.playlistmaker.search.domain.TracksInteractor
 import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.search.ui.TrackScreenState
+import com.example.playlistmaker.util.debounce
+import kotlinx.coroutines.launch
 
 class TracksSearchViewModel(
     private val application: Application,
@@ -19,8 +19,6 @@ class TracksSearchViewModel(
 ) : ViewModel() {
 
     private var historyTrackList = ArrayList<Track>()
-
-    private val handler = Handler(Looper.getMainLooper())
 
     private val _searchStateLiveData = MutableLiveData<TrackScreenState>()
     fun observeState(): LiveData<TrackScreenState> = mediatorStateLiveData
@@ -34,6 +32,11 @@ class TracksSearchViewModel(
     }
 
     private var latestSearchText: String? = null
+
+    private val trackSearchDebounce =
+        debounce<String>(SEARCH_DEBOUNCE_DELAY, viewModelScope, true) { changedText ->
+            searchTrack(changedText)
+        }
 
     private val mediatorStateLiveData = MediatorLiveData<TrackScreenState>().also { liveData ->
         liveData.addSource(_searchStateLiveData) { trackState ->
@@ -49,7 +52,6 @@ class TracksSearchViewModel(
     override fun onCleared() {
         super.onCleared()
         tracksInteractor.saveSearchHistory(historyTrackList)
-        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
     }
 
     //добавление трека в историю
@@ -66,21 +68,10 @@ class TracksSearchViewModel(
 
     //поиск с задержкой
     fun searchDebounce(changedText: String) {
-        if (latestSearchText == changedText) {
-            return
+        if (latestSearchText != changedText) {
+            latestSearchText = changedText
+            trackSearchDebounce(changedText)
         }
-
-        this.latestSearchText = changedText
-        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
-
-        val searchRunnable = Runnable { searchTrack(changedText) }
-
-        val postTime = SystemClock.uptimeMillis() + SEARCH_DEBOUNCE_DELAY
-        handler.postAtTime(
-            searchRunnable,
-            SEARCH_REQUEST_TOKEN,
-            postTime,
-        )
     }
 
     //очистить историю поиска
@@ -106,40 +97,44 @@ class TracksSearchViewModel(
         if (newSearchText.isNotEmpty()) {
             renderState(TrackScreenState.Loading)
 
-            tracksInteractor.search(newSearchText, object : TracksInteractor.TracksConsumer {
-                override fun consume(foundTracks: List<Track>?, errorMessage: String?) {
-                    val trackList = mutableListOf<Track>()
-                    if (foundTracks != null) {
-                        trackList.addAll(foundTracks)
+            viewModelScope.launch {
+                tracksInteractor
+                    .search(newSearchText)
+                    .collect { pair ->
+                        processResult(pair.resultList, pair.error)
                     }
+            }
+        }
+    }
 
-                    when {
-                        errorMessage != null -> {
-                            renderState(
-                                TrackScreenState.Error(
-                                    errorMessage = application.getString(R.string.no_connection),
-                                )
-                            )
-                        }
+    private fun processResult(foundTracks: List<Track>?, errorMessage: String?) {
+        val trackList = mutableListOf<Track>()
+        if (foundTracks != null) {
+            trackList.addAll(foundTracks)
+        }
 
-                        trackList.isEmpty() -> {
-                            renderState(
-                                TrackScreenState.Empty(
-                                    message = application.getString(R.string.nothing_found),
-                                )
-                            )
-                        }
+        when {
+            errorMessage != null -> {
+                renderState(
+                    TrackScreenState.Error(
+                        errorMessage = application.getString(
+                            R.string.no_connection
+                        )
+                    )
+                )
+            }
 
-                        else -> {
-                            renderState(
-                                TrackScreenState.Content(
-                                    trackList = trackList,
-                                )
-                            )
-                        }
-                    }
-                }
-            })
+            trackList.isEmpty() -> {
+                renderState(
+                    TrackScreenState.Empty(
+                        message = application.getString(R.string.nothing_found)
+                    )
+                )
+            }
+
+            else -> {
+                renderState(TrackScreenState.Content(trackList = trackList))
+            }
         }
     }
 
@@ -150,7 +145,6 @@ class TracksSearchViewModel(
 
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
-        private val SEARCH_REQUEST_TOKEN = Any()
-        const val HISTORY_MAX_SIZE = 10
+        private const val HISTORY_MAX_SIZE = 10
     }
 }

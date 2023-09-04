@@ -9,7 +9,6 @@ class PlayerRepositoryImpl(private val mediaPlayer: MediaPlayer) : PlayerReposit
     private var stateChangedTo: ((PlayerState) -> Unit)? = null
 
     override fun preparePlayer(url: String) {
-
         mediaPlayer.apply {
             setDataSource(url)
             prepareAsync()
@@ -28,7 +27,9 @@ class PlayerRepositoryImpl(private val mediaPlayer: MediaPlayer) : PlayerReposit
     }
 
     override fun pausePlayer() {
+        if (mediaPlayer.isPlaying) {
         mediaPlayer.pause()
+        }
         stateChangedTo?.invoke(PlayerState.STATE_PAUSED)
     }
 
