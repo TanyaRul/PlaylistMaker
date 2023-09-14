@@ -6,7 +6,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class PlayerTrack(
-    val trackId: String?,
+    val trackId: String,
     val trackName: String?,
     val artistName: String?,
     val trackTimeMillis: Long?,
@@ -16,6 +16,7 @@ data class PlayerTrack(
     val primaryGenreName: String?,
     val country: String?,
     val previewUrl: String?,
+    var isFavorite: Boolean = false,
 ) : Parcelable {
 
     companion object {
@@ -30,7 +31,24 @@ data class PlayerTrack(
                 releaseDate = track.releaseDate,
                 primaryGenreName = track.primaryGenreName,
                 country = track.country,
-                previewUrl = track.previewUrl
+                previewUrl = track.previewUrl,
+                isFavorite = track.isFavorite,
+            )
+        }
+
+        fun mappingPlayerTrack(track: PlayerTrack): Track {
+            return Track(
+                trackId = track.trackId,
+                trackName = track.trackName,
+                artistName = track.artistName,
+                trackTimeMillis = track.trackTimeMillis,
+                artworkUrl100 = track.artworkUrl100,
+                collectionName = track.collectionName,
+                releaseDate = track.releaseDate,
+                primaryGenreName = track.primaryGenreName,
+                country = track.country,
+                previewUrl = track.previewUrl,
+                isFavorite = track.isFavorite,
             )
         }
     }

@@ -10,8 +10,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvTrackList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/layout_margin_top_low"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
         <ImageView
-            android:id="@+id/placeholderImageNoPlaylist"
+            android:id="@+id/placeholderImageNoFavorites"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/placeholder_margin_top"
@@ -21,14 +32,14 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/placeholderTextNoPlaylist"
+            android:id="@+id/placeholderTextNoFavorites"
             style="@style/SearchActivityTextStyle"
             android:layout_marginHorizontal="@dimen/text_margin_start"
             android:layout_marginTop="@dimen/layout_margin_top_low"
             android:text="@string/empty_library"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/placeholderImageNoPlaylist" />
+            app:layout_constraintTop_toBottomOf="@+id/placeholderImageNoFavorites" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>
