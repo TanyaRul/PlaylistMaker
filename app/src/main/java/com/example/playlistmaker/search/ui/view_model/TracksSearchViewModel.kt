@@ -57,10 +57,27 @@ class TracksSearchViewModel(
     //добавление трека в историю
     fun addTrackToHistory(track: Track) {
         historyTrackList = tracksInteractor.readSearchHistory() as ArrayList<Track>
-        historyTrackList.remove(track)
+
+        if (historyTrackList.size > 0) {
+            var foundTrack: Track? = null
+
+            for (historyTrack in historyTrackList) {
+                if (historyTrack.toString().contains(track.trackId)) {
+                    foundTrack = historyTrack
+                    break
+                }
+            }
+
+            if (foundTrack.toString().isNotEmpty()) {
+                historyTrackList.remove(foundTrack)
+
+            }
+        }
+
         if (historyTrackList.size >= HISTORY_MAX_SIZE) {
             historyTrackList.removeAt(historyTrackList.size - 1)
         }
+
         historyTrackList.add(0, track)
         tracksInteractor.saveSearchHistory(historyTrackList)
         _historyLiveData.postValue(historyTrackList)

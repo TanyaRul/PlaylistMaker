@@ -4,6 +4,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
@@ -11,6 +12,8 @@ import com.example.playlistmaker.databinding.ActivityPlayerBinding
 import com.example.playlistmaker.player.domain.model.PlayerState
 import com.example.playlistmaker.player.ui.model.PlayerTrack
 import com.example.playlistmaker.player.ui.view_model.PlayerViewModel
+import com.example.playlistmaker.search.domain.model.Track
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -37,6 +40,7 @@ class PlayerActivity : AppCompatActivity() {
 
 
         fillTrackItem(track, binding)
+
         if (track.previewUrl?.isNotEmpty() == true) {
             binding.playbackProgress.text = getString(R.string.playback_progress_start)
             binding.playbackControlButton.setImageResource(R.drawable.play_button)
@@ -47,7 +51,6 @@ class PlayerActivity : AppCompatActivity() {
             binding.playbackControlButton.setOnClickListener {
                 if (track.previewUrl.isNullOrEmpty()) {
                     binding.playbackControlButton.isEnabled = false
-
                 } else {
                     playbackControl(playerState)
                 }
@@ -62,10 +65,24 @@ class PlayerActivity : AppCompatActivity() {
             changeTimer(currentTimer)
         }
 
+        viewModel.isFavoriteLiveData.observe(this) { isFavorite ->
+            changeFavoriteIcon(isFavorite)
+            track.isFavorite = isFavorite
+        }
+
+        lifecycleScope.launch {
+            val isFavorite = viewModel.isTackFavorite(track.trackId)
+            changeFavoriteIcon(isFavorite)
+            track.isFavorite = isFavorite
+        }
+
+        binding.favoriteButton.setOnClickListener {
+            viewModel.onFavoriteClicked(mappingFromPlayerTrack(track))
+        }
+
         binding.backToSearch.setOnClickListener {
             finish()
         }
-
     }
 
     private fun fillTrackItem(track: PlayerTrack, binding: ActivityPlayerBinding) {
@@ -130,6 +147,19 @@ class PlayerActivity : AppCompatActivity() {
                 startPlayer()
             }
         }
+    }
+
+    private fun mappingFromPlayerTrack(track: PlayerTrack): Track {
+        return PlayerTrack.mappingPlayerTrack(track)
+    }
+
+    private fun changeFavoriteIcon(isFavorite: Boolean) {
+        val buttonImageResource = if (isFavorite) {
+            R.drawable.favorite_button_pressed
+        } else {
+            R.drawable.favorite_button
+        }
+        binding.favoriteButton.setImageResource(buttonImageResource)
     }
 
     override fun onPause() {

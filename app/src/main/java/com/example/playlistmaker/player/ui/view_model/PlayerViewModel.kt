@@ -6,12 +6,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.player.domain.PlayerInteractor
 import com.example.playlistmaker.player.domain.model.PlayerState
+import com.example.playlistmaker.library.domain.db.FavoritesInteractor
+import com.example.playlistmaker.search.domain.model.Track
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
-class PlayerViewModel(private val playerInteractor: PlayerInteractor) : ViewModel() {
+class PlayerViewModel(
+    private val playerInteractor: PlayerInteractor,
+    private val favoritesInteractor: FavoritesInteractor,
+) : ViewModel() {
 
     private var timerJob: Job? = null
 
@@ -22,6 +28,9 @@ class PlayerViewModel(private val playerInteractor: PlayerInteractor) : ViewMode
 
     private var _playerStateLiveData = MutableLiveData<PlayerState>()
     val playerStateLiveData: LiveData<PlayerState> = _playerStateLiveData
+
+    private var _isFavoriteLiveData = MutableLiveData<Boolean>()
+    val isFavoriteLiveData: LiveData<Boolean> = _isFavoriteLiveData
 
     init {
         playerInteractor.changePlayerState { state ->
@@ -38,6 +47,34 @@ class PlayerViewModel(private val playerInteractor: PlayerInteractor) : ViewMode
                 currentTimerLiveData.postValue(playerInteractor.currentPosition())
             }
         }
+    }
+
+    fun onFavoriteClicked(track: Track) {
+        viewModelScope.launch {
+            val newFavoriteStatus = if (!track.isFavorite) {
+                favoritesInteractor.addTrackToFavorites(track)
+                true
+            } else {
+
+                favoritesInteractor.removeTrackFromFavorites(track)
+                false
+            }
+
+            _isFavoriteLiveData.postValue(newFavoriteStatus)
+            track.isFavorite = newFavoriteStatus
+        }
+    }
+
+    suspend fun isTackFavorite(trackId: String): Boolean {
+        val favoriteTracks: Flow<List<String>> = favoritesInteractor.getFavoriteTracksIds()
+
+        val favoriteTracksIds: MutableList<String> = mutableListOf()
+
+        favoriteTracks.collect { list ->
+            favoriteTracksIds.addAll(list)
+        }
+
+        return favoriteTracksIds.contains(trackId)
     }
 
     fun prepare(url: String) {
