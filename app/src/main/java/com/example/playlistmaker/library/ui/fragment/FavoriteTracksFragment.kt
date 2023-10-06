@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
+import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentFavoriteTracksBinding
 import com.example.playlistmaker.library.ui.FavoritesScreenState
 import com.example.playlistmaker.library.ui.view_model.FavoriteTracksViewModel
@@ -23,6 +24,7 @@ class FavoriteTracksFragment : BindingFragment<FragmentFavoriteTracksBinding>() 
     private val favoriteTracksViewModel by viewModel<FavoriteTracksViewModel>()
 
     private val _trackList = ArrayList<Track>()
+
     private lateinit var onTrackClickDebounce: (Track) -> Unit
 
     private val trackAdapter = TrackAdapter(_trackList) {
@@ -66,15 +68,15 @@ class FavoriteTracksFragment : BindingFragment<FragmentFavoriteTracksBinding>() 
     private fun render(state: FavoritesScreenState) {
         when (state) {
             is FavoritesScreenState.Content -> showContent(state.tracks)
-            is FavoritesScreenState.Empty -> showEmpty(state.emptyMessage)
+            is FavoritesScreenState.Empty -> showEmpty()
         }
     }
 
-    private fun showEmpty(emptyMessage: String) {
+    private fun showEmpty() {
         binding.rvTrackList.isVisible = false
         binding.placeholderTextNoFavorites.isVisible = true
         binding.placeholderImageNoFavorites.isVisible = true
-        binding.placeholderTextNoFavorites.text = emptyMessage
+        binding.placeholderTextNoFavorites.setText(R.string.empty_library)
     }
 
     private fun showContent(tracks: List<Track>) {

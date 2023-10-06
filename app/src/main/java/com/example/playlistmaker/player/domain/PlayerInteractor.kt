@@ -10,5 +10,3 @@ interface PlayerInteractor {
     fun currentPosition(): Int
     fun changePlayerState(newState: (PlayerState) -> Unit)
 }
-
-

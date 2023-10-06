@@ -1,27 +1,27 @@
 package com.example.playlistmaker.library.data.db
 
-import com.example.playlistmaker.library.data.db.entity.TrackEntity
+import com.example.playlistmaker.library.data.db.entity.TrackDb
 import com.example.playlistmaker.search.domain.model.Track
 
 class TrackDbConverter {
 
-    fun map(trackEntity: TrackEntity): Track {
+    fun map(trackDb: TrackDb): Track {
         return Track(
-            trackEntity.id,
-            trackEntity.trackName,
-            trackEntity.artistName,
-            trackEntity.trackTimeMillis,
-            trackEntity.artworkUrl100,
-            trackEntity.collectionName,
-            trackEntity.releaseDate,
-            trackEntity.primaryGenreName,
-            trackEntity.country,
-            trackEntity.previewUrl,
+            trackDb.id,
+            trackDb.trackName,
+            trackDb.artistName,
+            trackDb.trackTimeMillis,
+            trackDb.artworkUrl100,
+            trackDb.collectionName,
+            trackDb.releaseDate,
+            trackDb.primaryGenreName,
+            trackDb.country,
+            trackDb.previewUrl,
         )
     }
 
-    fun map(track: Track): TrackEntity {
-        return TrackEntity(
+    fun map(track: Track): TrackDb {
+        return TrackDb(
             track.trackId,
             track.trackName,
             track.artistName,

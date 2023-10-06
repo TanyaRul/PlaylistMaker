@@ -7,4 +7,3 @@ interface SearchHistoryStorage {
     fun readSearchHistory(): ArrayList<Track>
     fun clearSearchHistory()
 }
-
