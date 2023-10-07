@@ -180,8 +180,6 @@ class NewPlaylistFragment : BindingFragment<FragmentNewPlaylistBinding>() {
 
         newPlaylistViewModel.createPlaylist(playlist)
 
-        imagePath?.let { newPlaylistViewModel.saveImageToPrivateStorage(it) }
-
         Toast.makeText(
             requireContext(),
             getString(R.string.playlist_created, playlist.playlistTitle),

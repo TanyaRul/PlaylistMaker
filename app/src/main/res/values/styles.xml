@@ -51,9 +51,9 @@
         <item name="android:inputType">text</item>
         <item name="android:maxLength">50</item>
         <item name="android:maxLines">1</item>
-        <item name="android:padding">8dp</item>
-        <item name="android:paddingStart">12dp</item>
-        <item name="android:paddingEnd">32dp</item>
+        <item name="android:padding">@dimen/edit_text_icon_padding</item>
+        <item name="android:paddingStart">@dimen/padding_start</item>
+        <item name="android:paddingEnd">@dimen/padding_end</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:textColorHint">?attr/colorOnSecondary</item>
         <item name="android:textCursorDrawable">@drawable/color_cursor</item>
