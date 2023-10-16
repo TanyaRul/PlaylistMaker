@@ -3,6 +3,9 @@ package com.example.playlistmaker.di
 import android.content.Context
 import androidx.room.Room
 import com.example.playlistmaker.library.data.db.AppDatabase
+import com.example.playlistmaker.library.data.db.AppDatabase.Companion.DB_NAME
+import com.example.playlistmaker.library.data.storage.ImageStorage
+import com.example.playlistmaker.library.data.storage.ImageStorageImpl
 import com.example.playlistmaker.search.data.network.ItunesApi
 import com.example.playlistmaker.search.data.network.NetworkClient
 import com.example.playlistmaker.search.data.network.RetrofitNetworkClient
@@ -41,8 +44,12 @@ val dataModule = module {
     factory { Gson() }
 
     single {
-        Room.databaseBuilder(androidContext(), AppDatabase::class.java, "database.db")
+        Room.databaseBuilder(androidContext(), AppDatabase::class.java, DB_NAME)
             .build()
+    }
+
+    single<ImageStorage> {
+        ImageStorageImpl(get())
     }
 
 }

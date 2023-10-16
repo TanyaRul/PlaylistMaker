@@ -8,7 +8,7 @@
     <dimen name="regular_text_size">16sp</dimen>
     <dimen name="layout_margin_start">16dp</dimen>
     <dimen name="margin_top">14dp</dimen>
-    <dimen name="search_margin_horizontal">16dp</dimen>
+    <dimen name="margin_horizontal">16dp</dimen>
     <dimen name="layout_margin_top">24dp</dimen>
     <dimen name="settings_margin_end">12dp</dimen>
     <dimen name="settings_vertical_padding">21dp</dimen>
@@ -51,4 +51,12 @@
     <dimen name="placeholder_margin_top">106dp</dimen>
     <dimen name="viewpager_margin_top">105dp</dimen>
     <dimen name="regular_text_size_12">12sp</dimen>
+    <dimen name="layout_margin_horizontal">24dp</dimen>
+    <dimen name="cover_padding">106dp</dimen>
+    <dimen name="layout_height_54">54dp</dimen>
+    <dimen name="layout_margin_32">32dp</dimen>
+    <dimen name="layout_height_44">44dp</dimen>
+    <dimen name="layout_margin_very_low">8dp</dimen>
+    <dimen name="padding_start">12dp</dimen>
+    <dimen name="padding_end">32dp</dimen>
 </resources>

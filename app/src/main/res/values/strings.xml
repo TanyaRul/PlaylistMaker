@@ -30,4 +30,26 @@
     <string name="empty_library">Ваша медиатека пуста</string>
     <string name="no_connection_message">Проверьте подключение к интернету</string>
     <string name="server_error_message">Ошибка сервера</string>
+    <string name="playlist_title">Название*</string>
+    <string name="playlist_description">Описание</string>
+    <string name="create_playlist">Создать</string>
+    <string name="permission_rationale">Разрешение на доступ к изображениям необходимо для установки обложки плейлиста</string>
+    <string name="playlist_created">Плейлист "%s" создан</string>
+    <string name="complete_playlist_creation">Завершить создание плейлиста?</string>
+    <string name="data_loss_warning">Все несохраненные данные будут потеряны</string>
+    <string name="cancel">Отмена</string>
+    <string name="complete">Завершить</string>
+    <string name="added_to_playlist">Добавлено в плейлист</string>
+    <string name="already_in_playlist">Трек уже добавлен в плейлист</string>
+    <string name="add_to_playlist">Добавить в плейлист</string>
+    <string name="track_count">трек</string>
+
+    <plurals name="track_count">
+        <item quantity="zero">%1$d треков</item>
+        <item quantity="one">%1$d трек</item>
+        <item quantity="two">%1$d трека</item>
+        <item quantity="few">%1$d трека</item>
+        <item quantity="many">%1$d треков</item>
+        <item quantity="other">%1$d треков</item>
+    </plurals>
 </resources>

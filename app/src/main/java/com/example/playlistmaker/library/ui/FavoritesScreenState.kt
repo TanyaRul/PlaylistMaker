@@ -7,7 +7,5 @@ sealed interface FavoritesScreenState {
         val tracks: List<Track>
     ) : FavoritesScreenState
 
-    data class Empty(
-        val emptyMessage: String,
-    ) : FavoritesScreenState
+    object Empty : FavoritesScreenState
 }
