@@ -126,14 +126,14 @@ class PlaylistDetailsViewModel(
     fun deletePlaylist(playlist: Playlist) {
         viewModelScope.launch {
             playlistsInteractor.deletePlaylistById(playlist.id).collect {
-                Log.d("PLAYLIST state", it.toString())
+                //Log.d("PLAYLIST state", it.toString())
                 renderStateTracksInPlaylist(it)
             }
         }
     }
 
     private fun renderStateTracksInPlaylist(state: PlaylistDetailsScreenState) {
-        Log.d("PLAYLIST statelive", state.toString())
+        //Log.d("PLAYLIST statelive", state.toString())
         statePlaylistLiveData.postValue(state)
     }
 }

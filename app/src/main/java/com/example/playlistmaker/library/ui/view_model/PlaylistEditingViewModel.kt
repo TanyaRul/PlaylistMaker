@@ -8,6 +8,7 @@ import com.example.playlistmaker.library.domain.model.Playlist
 import kotlinx.coroutines.launch
 import java.io.File
 
-class PlaylistEditingViewModel(playlistsInteractor: PlaylistsInteractor) : NewPlaylistViewModel(playlistsInteractor) {
+class PlaylistEditingViewModel(val playlistsInteractor: PlaylistsInteractor) : NewPlaylistViewModel(playlistsInteractor) {
+
 
 }

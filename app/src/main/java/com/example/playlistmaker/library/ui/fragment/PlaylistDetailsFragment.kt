@@ -78,7 +78,7 @@ class PlaylistDetailsFragment : BindingFragment<FragmentPlaylistDetailsBinding>(
         playlistDetailsViewModel.getFlowPlaylistById(playlist!!.id)
 
         playlistDetailsViewModel.getStatePlaylistLiveData().observe(viewLifecycleOwner) {
-            Log.d("PLAYLIST FR state", it.toString())
+            //Log.d("PLAYLIST FR state", it.toString())
             renderTracksInPlaylist(it)
         }
 
@@ -128,7 +128,7 @@ class PlaylistDetailsFragment : BindingFragment<FragmentPlaylistDetailsBinding>(
     }
 
     private fun renderTracksInPlaylist(state: PlaylistDetailsScreenState) {
-        Log.d("PLAYLIST frst render", state.toString())
+        //Log.d("PLAYLIST frst render", state.toString())
         when (state) {
             is PlaylistDetailsScreenState.NoTracks -> showStateNoTracks()
 
@@ -144,7 +144,7 @@ class PlaylistDetailsFragment : BindingFragment<FragmentPlaylistDetailsBinding>(
             )
 
             is PlaylistDetailsScreenState.DeletedPlaylist -> {
-                Log.d("PLAYLIST fun del", "fun del")
+                //Log.d("PLAYLIST fun del", "fun del")
                 showStateDeletedPlaylist()
             }
 
@@ -353,9 +353,7 @@ class PlaylistDetailsFragment : BindingFragment<FragmentPlaylistDetailsBinding>(
                 findNavController().navigate(
                     R.id.playlistEditingFragment
                 )
-                //findNavController().navigate(R.id.newPlaylistFragment)
             }
-
         }
     }
 

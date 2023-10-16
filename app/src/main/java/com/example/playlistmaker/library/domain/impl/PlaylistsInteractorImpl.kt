@@ -84,9 +84,9 @@ class PlaylistsInteractorImpl(
 
         return playlistsRepository.deletePlaylistById(playlistId).map {
             when(it){
-                null-> {Log.d("PLAYLIST null","null")
+                null-> {//Log.d("PLAYLIST null","null")
                     PlaylistDetailsScreenState.Error}
-                else-> {Log.d("PLAYLIST notnull","notnull")
+                else-> {//Log.d("PLAYLIST notnull","notnull")
                     PlaylistDetailsScreenState.DeletedPlaylist}
             }
         }
@@ -99,9 +99,9 @@ class PlaylistsInteractorImpl(
     override suspend fun getFlowPlaylistById(id: Int): Flow<PlaylistDetailsScreenState> {
         return playlistsRepository.getFlowPlaylistById(id).map {
             when(it){
-                null -> {Log.d("PLAYLIST get null","null")
+                null -> {//Log.d("PLAYLIST INT get null","null")
                     PlaylistDetailsScreenState.Error}
-                else -> {Log.d("PLAYLIST get notnull","notnull")
+                else -> {//Log.d("PLAYLIST INT get notnull","notnull")
                     PlaylistDetailsScreenState.InitPlaylist(it)}
             }
         }
@@ -120,7 +120,7 @@ class PlaylistsInteractorImpl(
 
         return flowTrack.map {trackList ->
 
-            Log.d("PLAYLIST flowtrackList", trackList.toString())
+            //Log.d("PLAYLIST flowtrackList", trackList.toString())
             if (trackList == null) {
                 PlaylistDetailsScreenState.Error
             } else if (trackList.isEmpty()) {

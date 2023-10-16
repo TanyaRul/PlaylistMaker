@@ -39,11 +39,15 @@ open class NewPlaylistFragment : BindingFragment<FragmentNewPlaylistBinding>() {
 
     private val requester = PermissionRequester.instance()
 
-    private var imagePath: String? = null
+    var playlistTitleTemp: String = ""
+    var playlistDescriptionTemp: String? = null
+    var playlistCoverTemp: String? = null
+    var playlistTrackIdsTemp: List<String>? = null
+    var playlistNumberOfTracksTemp: Int? = null
 
     private var confirmDialog: MaterialAlertDialogBuilder? = null
 
-    private var pickMedia =
+    private val pickMedia =
         registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             if (uri != null) {
                 Glide.with(this)
@@ -57,7 +61,7 @@ open class NewPlaylistFragment : BindingFragment<FragmentNewPlaylistBinding>() {
                     )
                     .into(binding.ivPlaylistCover)
 
-                imagePath = uri.toString()
+                playlistCoverTemp = uri.toString()
             }
         }
 
@@ -79,6 +83,10 @@ open class NewPlaylistFragment : BindingFragment<FragmentNewPlaylistBinding>() {
                 navigateBack()
             }
 
+        binding.etPlaylistTitle.addTextChangedListener(getTextWatcherForPlaylistTitle())
+
+        binding.etPlaylistDescription.addTextChangedListener(getTextWatcherForPlaylistDescription())
+
         binding.btnBack.setOnClickListener {
             checkDataForDialog()
         }
@@ -91,22 +99,22 @@ open class NewPlaylistFragment : BindingFragment<FragmentNewPlaylistBinding>() {
             createPlaylist()
         }
 
-        setupTextChangeListener()
+        //setupTextChangeListener()
 
-        onBackPress()
+        onBackPress(true)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString("imagePath", imagePath)
+        outState.putString("imagePath", playlistCoverTemp)
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
-        imagePath = savedInstanceState?.getString("imagePath")
-        if (imagePath != null) {
+        playlistCoverTemp = savedInstanceState?.getString("imagePath")
+        if (playlistCoverTemp != null) {
             Glide.with(this)
-                .load(imagePath)
+                .load(playlistCoverTemp)
                 .placeholder(R.drawable.add_photo)
                 .transform(
                     CenterCrop(),
@@ -122,6 +130,31 @@ open class NewPlaylistFragment : BindingFragment<FragmentNewPlaylistBinding>() {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
             Manifest.permission.READ_MEDIA_IMAGES
         else Manifest.permission.READ_EXTERNAL_STORAGE
+    }
+
+    private fun getTextWatcherForPlaylistTitle(): TextWatcher {
+        return object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                //binding.buttonCreatePlaylist.isEnabled = s?.isNotEmpty() == true
+                playlistTitleTemp = s.toString()
+            }
+            override fun afterTextChanged(s: Editable?) {
+                binding.tvCreatePlaylist.isEnabled = s?.isNotEmpty() == true
+            }
+        }
+    }
+    private fun getTextWatcherForPlaylistDescription(): TextWatcher {
+        return object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                playlistDescriptionTemp = s.toString()
+            }
+            override fun afterTextChanged(s: Editable?) {
+            }
+        }
     }
 
     private fun setupTextChangeListener() {
@@ -171,11 +204,11 @@ open class NewPlaylistFragment : BindingFragment<FragmentNewPlaylistBinding>() {
     private fun createPlaylist() {
         val playlist = Playlist(
             id = 0,
-            playlistTitle = binding.etPlaylistTitle.text.toString(),
-            playlistDescription = binding.etPlaylistDescription.text.toString(),
-            playlistCoverPath = imagePath,
-            trackIds = null,
-            numberOfTracks = 0
+            playlistTitle = playlistTitleTemp, //binding.etPlaylistTitle.text.toString(),
+            playlistDescription = playlistDescriptionTemp, //binding.etPlaylistDescription.text.toString(),
+            playlistCoverPath = playlistCoverTemp,
+            trackIds = playlistTrackIdsTemp,
+            numberOfTracks = playlistNumberOfTracksTemp
         )
 
         newPlaylistViewModel.createPlaylist(playlist)
@@ -190,9 +223,11 @@ open class NewPlaylistFragment : BindingFragment<FragmentNewPlaylistBinding>() {
     }
 
     private fun checkDataForDialog() {
-        if (imagePath != null ||
-            !binding.etPlaylistTitle.text.isNullOrEmpty() ||
-            !binding.etPlaylistDescription.text.isNullOrEmpty()
+        if (playlistCoverTemp != null ||
+            playlistTitleTemp.isNotEmpty() ||
+            //!binding.etPlaylistTitle.text.isNullOrEmpty() ||
+            playlistDescriptionTemp?.isNotEmpty() == true
+            //!binding.etPlaylistDescription.text.isNullOrEmpty()
         ) {
             confirmDialog?.show()
         } else {
@@ -200,10 +235,10 @@ open class NewPlaylistFragment : BindingFragment<FragmentNewPlaylistBinding>() {
         }
     }
 
-    open fun onBackPress() {
+    open fun onBackPress(switch:Boolean) {
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner,
-            object : OnBackPressedCallback(true) {
+            object : OnBackPressedCallback(switch) {
                 override fun handleOnBackPressed() {
                     checkDataForDialog()
                 }

@@ -1,11 +1,14 @@
 package com.example.playlistmaker.library.ui.fragment
 
+import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
@@ -25,16 +28,51 @@ class PlaylistEditingFragment : NewPlaylistFragment() {
     override val newPlaylistViewModel by viewModel<PlaylistEditingViewModel>()
     private var playlist: Playlist? = null
     private val mainViewModel by activityViewModel<MainViewModel>()
+    private var playlistIdTemp: Int = 0
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         playlist = mainViewModel.getPlaylist().value!!
 
-        binding.tvNewPlaylist.text = requireActivity().resources.getString(R.string.edit)
+        playlistIdTemp = playlist?.id!!
+        playlistTitleTemp = playlist?.playlistTitle!!
+        playlistDescriptionTemp = playlist?.playlistDescription
+        if(playlist?.playlistCoverPath != null){
+            playlistCoverTemp = playlist?.playlistCoverPath!!
+            Log.d("PLAYLIST edititng playlistCoverTemp", playlistCoverTemp.toString())
+        }
+        playlistTrackIdsTemp = playlist?.trackIds
+        playlistNumberOfTracksTemp = playlist?.numberOfTracks
 
+
+
+        setViewAttributes()
+
+        initPlaylistData(playlist!!)
+
+        binding.tvCreatePlaylist.setOnClickListener{
+                updatePlaylist()
+        }
+
+        binding.btnBack.setOnClickListener {
+            findNavController().popBackStack()
+        }
+
+        onBackPress(false)
+    }
+
+    override fun onBackPress(switch: Boolean) {
+    }
+
+    private fun setViewAttributes() {
+        binding.tvNewPlaylist.text = requireActivity().resources.getString(R.string.edit)
+        binding.tvCreatePlaylist.text = requireActivity().resources.getString(R.string.save)
+    }
+
+    private fun initPlaylistData(playlist: Playlist) {
         Glide.with(this)
-            .load(playlist?.playlistCoverPath)
+            .load(playlist.playlistCoverPath)
             .placeholder(R.drawable.add_photo)
             .transform(
                 CenterCrop(),
@@ -44,16 +82,25 @@ class PlaylistEditingFragment : NewPlaylistFragment() {
             )
             .into(binding.ivPlaylistCover)
 
-        binding.etPlaylistTitle.setText(playlist?.playlistTitle)
+        Log.d("PLAYLIST edititng playlistCoverPath", playlist.playlistCoverPath.toString())
 
-        binding.etPlaylistDescription.setText(playlist?.playlistDescription)
+        binding.etPlaylistTitle.setText(playlist.playlistTitle)
 
-        binding.tvCreatePlaylist.text = requireActivity().resources.getString(R.string.save)
-
+        binding.etPlaylistDescription.setText(playlist.playlistDescription)
     }
 
-    override fun onBackPress() {
-        findNavController().navigateUp()
+    private fun updatePlaylist () {
+        val playlist = Playlist(
+            playlistIdTemp,
+            playlistTitleTemp,
+            playlistDescriptionTemp,
+            playlistCoverTemp,
+            playlistTrackIdsTemp,
+            playlistNumberOfTracksTemp
+        )
+        Log.d("PLAYLIST update playlistCoverTemp", playlistCoverTemp.toString())
+        newPlaylistViewModel.updatePlaylist(playlist)
+        findNavController().popBackStack()
     }
 
 }

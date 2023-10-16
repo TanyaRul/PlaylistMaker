@@ -12,9 +12,11 @@ import com.example.playlistmaker.library.domain.model.Playlist
 import com.example.playlistmaker.search.domain.model.Track
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 
 class PlaylistsRepositoryImpl(
     private val appDatabase: AppDatabase,
@@ -91,9 +93,13 @@ class PlaylistsRepositoryImpl(
     override suspend fun getFlowPlaylistById(id: Int): Flow<Playlist?> {
         val flowPlaylist = appDatabase.playlistDao().getFlowPlaylistById(id)
         return (flowPlaylist.map { playlist ->
-            if (playlist != null) playlistDbConverter.mapFromPlaylistDbToPlaylist(
-                playlist
-            ) else null
+            if (playlist != null) {
+                //Log.d("PLAYLIST REP get notnull","notnull")
+                playlistDbConverter.mapFromPlaylistDbToPlaylist(playlist)
+            } else {
+                //Log.d("PLAYLIST REP get null", "null")
+                null
+            }
         })
     }
 
@@ -101,16 +107,16 @@ class PlaylistsRepositoryImpl(
         try {
             val playlist = appDatabase.playlistDao().getPlaylistById(playlistId)
             val listTrackIds = takeFromJson(playlist.trackIds)
-            Log.d("PLAYLIST listTrackIds", listTrackIds.toString())
-            Log.d("PLAYLIST playlistId", playlistId.toString())
+            //Log.d("PLAYLIST listTrackIds", listTrackIds.toString())
+            //Log.d("PLAYLIST playlistId", playlistId.toString())
             return if (listTrackIds.isEmpty()) {
-                Log.d("PLAYLIST 1","1")
-                Log.d("PLAYLIST 1", playlist.id.toString())
+                //Log.d("PLAYLIST 1", "1")
+                //Log.d("PLAYLIST 1", playlist.id.toString())
                 appDatabase.playlistDao().deletePlaylistById(playlist.id)
-                Log.d("PLAYLIST 1 listTrackIds", listTrackIds.toString())
+                //Log.d("PLAYLIST 1 listTrackIds", listTrackIds.toString())
                 flow { emit(Unit) }
             } else {
-                Log.d("PLAYLIST 2","2")
+                //Log.d("PLAYLIST 2", "2")
                 for (i in 0 until listTrackIds.size) {
                     removeTrackFromCommonTable(listTrackIds[i])
                 }
@@ -119,7 +125,7 @@ class PlaylistsRepositoryImpl(
             }
 
         } catch (ext: Throwable) {
-            Log.d("PLAYLIST 3","3")
+            //Log.d("PLAYLIST 3", "3")
             return flow { emit(null) }
         }
     }
@@ -210,7 +216,7 @@ class PlaylistsRepositoryImpl(
             val playlist = appDatabase.playlistDao().getPlaylistById(playlistId)
             val listTrackIds = takeFromJson(playlist.trackIds)
             val stringListIds: List<String> = listTrackIds.map { it.toString() }
-            Log.d("PLAYLIST stringListIds RM", stringListIds.toString())
+            //Log.d("PLAYLIST stringListIds RM", stringListIds.toString())
 
             return if (stringListIds.isEmpty()) {
                 flow { emit(ArrayList<Track>()) }
