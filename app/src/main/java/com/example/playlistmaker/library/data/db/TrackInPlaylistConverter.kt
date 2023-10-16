@@ -18,4 +18,19 @@ class TrackInPlaylistConverter {
             track.previewUrl,
         )
     }
+
+    fun map(trackInPlaylist: TrackInPlaylist): Track {
+        return Track(
+            trackInPlaylist.id,
+            trackInPlaylist.trackName,
+            trackInPlaylist.artistName,
+            trackInPlaylist.trackTimeMillis,
+            trackInPlaylist.artworkUrl100,
+            trackInPlaylist.collectionName,
+            trackInPlaylist.releaseDate,
+            trackInPlaylist.primaryGenreName,
+            trackInPlaylist.country,
+            trackInPlaylist.previewUrl,
+        )
+    }
 }

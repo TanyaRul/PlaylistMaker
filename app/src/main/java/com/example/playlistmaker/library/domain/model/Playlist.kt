@@ -1,12 +1,14 @@
 package com.example.playlistmaker.library.domain.model
 
-import java.io.Serializable
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class Playlist(
-    val id: Int,
-    val playlistTitle: String,
-    val playlistDescription: String?,
+    var id: Int,
+    var playlistTitle: String,
+    var playlistDescription: String?,
     var playlistCoverPath: String?,
     var trackIds: List<String>?,
     var numberOfTracks: Int?
-) : Serializable
+) : Parcelable

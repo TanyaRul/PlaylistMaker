@@ -4,7 +4,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.library.domain.model.Playlist
 
-class PlaylistAdapter(var playlists: ArrayList<Playlist>) :
+class PlaylistAdapter(
+    var playlists: ArrayList<Playlist>,
+    private val onPlaylistClick: (Playlist) -> Unit
+) :
     RecyclerView.Adapter<PlaylistViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlaylistViewHolder {
@@ -13,6 +16,9 @@ class PlaylistAdapter(var playlists: ArrayList<Playlist>) :
 
     override fun onBindViewHolder(holder: PlaylistViewHolder, position: Int) {
         holder.bind(playlists[position])
+        holder.itemView.setOnClickListener {
+            onPlaylistClick.invoke(playlists[position])
+        }
     }
 
     override fun getItemCount(): Int {

@@ -256,8 +256,7 @@ class PlayerActivity : AppCompatActivity() {
     private fun showEmpty() {
         binding.rvTracks.isVisible = false
         binding.placeholderTextNoPlaylist.isVisible = true
-        binding.placeholderImageNoPlaylist.isVisible = true
-        binding.placeholderTextNoPlaylist.setText(R.string.no_playlist)
+        binding.placeholderImageNoPlaylist.isVisible = false
     }
 
     private fun showContent(playlists: List<Playlist>) {

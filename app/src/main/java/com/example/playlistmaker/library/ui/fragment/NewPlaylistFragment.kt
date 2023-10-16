@@ -33,9 +33,9 @@ import com.markodevcic.peko.PermissionResult
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class NewPlaylistFragment : BindingFragment<FragmentNewPlaylistBinding>() {
+open class NewPlaylistFragment : BindingFragment<FragmentNewPlaylistBinding>() {
 
-    private val newPlaylistViewModel by viewModel<NewPlaylistViewModel>()
+    open val newPlaylistViewModel by viewModel<NewPlaylistViewModel>()
 
     private val requester = PermissionRequester.instance()
 
@@ -200,7 +200,7 @@ class NewPlaylistFragment : BindingFragment<FragmentNewPlaylistBinding>() {
         }
     }
 
-    private fun onBackPress() {
+    open fun onBackPress() {
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {

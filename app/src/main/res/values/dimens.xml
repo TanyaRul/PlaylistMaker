@@ -59,4 +59,12 @@
     <dimen name="layout_margin_very_low">8dp</dimen>
     <dimen name="padding_start">12dp</dimen>
     <dimen name="padding_end">32dp</dimen>
+    <dimen name="layout_margin_top_8">8dp</dimen>
+    <dimen name="regular_text_size_18">18sp</dimen>
+    <dimen name="padding_vertical">20dp</dimen>
+    <dimen name="layout_width_50">50dp</dimen>
+    <dimen name="layout_height_4">4dp</dimen>
+    <dimen name="layout_margin_top_30">30dp</dimen>
+    <dimen name="layout_margin_top_28">28dp</dimen>
+    <dimen name="layout_margin_end_44">44dp</dimen>
 </resources>
