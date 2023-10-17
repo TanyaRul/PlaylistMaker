@@ -3,13 +3,8 @@ package com.example.playlistmaker.sharing.data.impl
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import com.example.playlistmaker.R
-import com.example.playlistmaker.library.domain.model.Playlist
-import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.sharing.data.repository.ExternalNavigator
 import com.example.playlistmaker.sharing.domain.model.EmailData
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 class ExternalNavigatorImpl(private val context: Context) : ExternalNavigator {
 
@@ -49,6 +44,5 @@ class ExternalNavigatorImpl(private val context: Context) : ExternalNavigator {
         }
         context.startActivity(shareIntent)
     }
-
 
 }

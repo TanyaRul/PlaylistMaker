@@ -14,12 +14,8 @@ import com.example.playlistmaker.library.ui.PlaylistAdapter
 import com.example.playlistmaker.library.ui.PlaylistsScreenState
 import com.example.playlistmaker.library.ui.view_model.PlaylistsViewModel
 import com.example.playlistmaker.main.ui.view_model.MainViewModel
-import com.example.playlistmaker.player.ui.activity.PlayerActivity
-import com.example.playlistmaker.player.ui.model.PlayerTrack
-import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.util.BindingFragment
 import com.example.playlistmaker.util.debounce
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -68,9 +64,6 @@ class PlaylistsFragment : BindingFragment<FragmentPlaylistsBinding>() {
             findNavController().navigate(
                 R.id.playlistDetailsFragment,
             )
-            /*val action = LibraryFragmentDirections.actionLibraryFragmentToPlaylistDetailsFragment(
-                playlist.id)
-            findNavController().navigate(action)*/
         }
     }
 

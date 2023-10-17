@@ -16,7 +16,6 @@ class BottomSheetPlaylistsViewHolder(view: View) : RecyclerView.ViewHolder(view)
     private val title: TextView = view.findViewById(R.id.tvPlaylistName)
     private val numberOfTracks: TextView = view.findViewById(R.id.tvNumberOfTracks)
 
-
     fun bind(playlist: Playlist) {
         Glide.with(itemView)
             .load(playlist.playlistCoverPath)

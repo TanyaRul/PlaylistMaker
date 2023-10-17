@@ -1,4 +1,4 @@
-package com.example.playlistmaker.player.ui.states
+package com.example.playlistmaker.library.domain.model.states
 
 sealed interface AddTrackState {
     data class Added(val playlistTitle: String? = null) : AddTrackState

@@ -1,6 +1,5 @@
 package com.example.playlistmaker.library.ui.view_model
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.library.domain.db.PlaylistsInteractor
@@ -21,8 +20,8 @@ open class NewPlaylistViewModel(private val playlistsInteractor: PlaylistsIntera
 
     fun updatePlaylist(playlist: Playlist) {
         viewModelScope.launch {
-            Log.d("NEW PLAYLIST VM update playlistCoverPath", playlist.playlistCoverPath.toString())
             playlistsInteractor.updatePlaylist(playlist)
         }
     }
+
 }

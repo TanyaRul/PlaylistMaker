@@ -46,12 +46,11 @@ val viewModelModule = module {
         NewPlaylistViewModel(playlistsInteractor = get())
     }
 
-    viewModel {//(playlistId: Int) ->
+    viewModel {
         PlaylistDetailsViewModel(
             playlistsInteractor = get(),
             sharingInteractor = get(),
             application = get(),
-            //playlistId
         )
     }
 

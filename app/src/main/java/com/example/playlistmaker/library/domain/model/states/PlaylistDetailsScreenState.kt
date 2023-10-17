@@ -1,4 +1,4 @@
-package com.example.playlistmaker.library.ui
+package com.example.playlistmaker.library.domain.model.states
 
 import com.example.playlistmaker.library.domain.model.Playlist
 import com.example.playlistmaker.search.domain.model.Track
@@ -20,5 +20,5 @@ sealed class PlaylistDetailsScreenState {
 
     object DeletedPlaylist : PlaylistDetailsScreenState()
 
-    class InitPlaylist(val playlist: Playlist?): PlaylistDetailsScreenState()
+    class InitPlaylist(val playlist: Playlist?) : PlaylistDetailsScreenState()
 }

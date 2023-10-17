@@ -1,7 +1,7 @@
 package com.example.playlistmaker.library.data.impl
 
 import com.example.playlistmaker.library.data.db.AppDatabase
-import com.example.playlistmaker.library.data.db.TrackDbConverter
+import com.example.playlistmaker.library.data.db.converters.TrackDbConverter
 import com.example.playlistmaker.library.data.db.entity.TrackDb
 import com.example.playlistmaker.library.domain.db.FavoritesRepository
 import com.example.playlistmaker.search.domain.model.Track
@@ -21,7 +21,6 @@ class FavoritesRepositoryImpl(
     override suspend fun removeTrackFromFavorites(track: Track) {
         val trackDb = convertFromTrack(track)
         appDatabase.trackDao().deleteTrackEntity(trackDb = trackDb)
-
     }
 
     override fun getFavoriteTracks(): Flow<List<Track>> = flow {

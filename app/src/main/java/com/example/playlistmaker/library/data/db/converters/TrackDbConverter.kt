@@ -1,4 +1,4 @@
-package com.example.playlistmaker.library.data.db
+package com.example.playlistmaker.library.data.db.converters
 
 import com.example.playlistmaker.library.data.db.entity.TrackDb
 import com.example.playlistmaker.search.domain.model.Track

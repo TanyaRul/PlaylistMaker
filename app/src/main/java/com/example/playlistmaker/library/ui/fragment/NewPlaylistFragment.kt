@@ -99,31 +99,32 @@ open class NewPlaylistFragment : BindingFragment<FragmentNewPlaylistBinding>() {
             createPlaylist()
         }
 
-        //setupTextChangeListener()
-
         onBackPress(true)
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        if (savedInstanceState != null) {
+            if (savedInstanceState.getString("imagePath") != "null") {
+                Glide.with(this)
+                    .load(savedInstanceState.getString("imagePath"))
+                    .placeholder(R.drawable.add_photo)
+                    .transform(
+                        CenterCrop(),
+                        RoundedCorners(
+                            requireContext().resources.getDimensionPixelSize(R.dimen.album_cover_corners_radius_large)
+                        )
+                    )
+                    .into(binding.ivPlaylistCover)
+
+                playlistCoverTemp = savedInstanceState.getString("imagePath")!!
+            }
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString("imagePath", playlistCoverTemp)
-    }
-
-    override fun onViewStateRestored(savedInstanceState: Bundle?) {
-        super.onViewStateRestored(savedInstanceState)
-        playlistCoverTemp = savedInstanceState?.getString("imagePath")
-        if (playlistCoverTemp != null) {
-            Glide.with(this)
-                .load(playlistCoverTemp)
-                .placeholder(R.drawable.add_photo)
-                .transform(
-                    CenterCrop(),
-                    RoundedCorners(
-                        requireContext().resources.getDimensionPixelSize(R.dimen.album_cover_corners_radius_large)
-                    )
-                )
-                .into(binding.ivPlaylistCover)
-        }
     }
 
     private fun getCheckedStorageConst(): String {
@@ -136,37 +137,29 @@ open class NewPlaylistFragment : BindingFragment<FragmentNewPlaylistBinding>() {
         return object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
+
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                //binding.buttonCreatePlaylist.isEnabled = s?.isNotEmpty() == true
                 playlistTitleTemp = s.toString()
             }
+
             override fun afterTextChanged(s: Editable?) {
                 binding.tvCreatePlaylist.isEnabled = s?.isNotEmpty() == true
             }
         }
     }
+
     private fun getTextWatcherForPlaylistDescription(): TextWatcher {
         return object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
+
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 playlistDescriptionTemp = s.toString()
             }
+
             override fun afterTextChanged(s: Editable?) {
             }
         }
-    }
-
-    private fun setupTextChangeListener() {
-        binding.etPlaylistTitle.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-
-            override fun afterTextChanged(s: Editable?) {
-                binding.tvCreatePlaylist.isEnabled = s?.isNotEmpty() == true
-            }
-        })
     }
 
     private fun askPermissions() {
@@ -225,9 +218,7 @@ open class NewPlaylistFragment : BindingFragment<FragmentNewPlaylistBinding>() {
     private fun checkDataForDialog() {
         if (playlistCoverTemp != null ||
             playlistTitleTemp.isNotEmpty() ||
-            //!binding.etPlaylistTitle.text.isNullOrEmpty() ||
             playlistDescriptionTemp?.isNotEmpty() == true
-            //!binding.etPlaylistDescription.text.isNullOrEmpty()
         ) {
             confirmDialog?.show()
         } else {
@@ -235,7 +226,7 @@ open class NewPlaylistFragment : BindingFragment<FragmentNewPlaylistBinding>() {
         }
     }
 
-    open fun onBackPress(switch:Boolean) {
+    open fun onBackPress(switch: Boolean) {
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner,
             object : OnBackPressedCallback(switch) {

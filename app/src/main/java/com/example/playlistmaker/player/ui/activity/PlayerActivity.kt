@@ -15,7 +15,7 @@ import com.example.playlistmaker.databinding.ActivityPlayerBinding
 import com.example.playlistmaker.library.domain.model.Playlist
 import com.example.playlistmaker.library.ui.PlaylistsScreenState
 import com.example.playlistmaker.library.ui.fragment.NewPlaylistFragment
-import com.example.playlistmaker.player.ui.states.AddTrackState
+import com.example.playlistmaker.library.domain.model.states.AddTrackState
 import com.example.playlistmaker.player.domain.model.PlayerState
 import com.example.playlistmaker.player.ui.BottomSheetPlaylistsAdapter
 import com.example.playlistmaker.player.ui.model.PlayerTrack
