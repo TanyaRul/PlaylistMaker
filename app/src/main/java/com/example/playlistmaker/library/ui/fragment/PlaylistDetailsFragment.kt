@@ -133,7 +133,8 @@ class PlaylistDetailsFragment : BindingFragment<FragmentPlaylistDetailsBinding>(
             is PlaylistDetailsScreenState.DeletedTrack -> showStateDeletedTrack(
                 state.listTracks,
                 state.durationSumTime,
-                state.counterTracks
+                state.counterTracks,
+                state.playlist
             )
 
             is PlaylistDetailsScreenState.DeletedPlaylist -> {
@@ -162,6 +163,7 @@ class PlaylistDetailsFragment : BindingFragment<FragmentPlaylistDetailsBinding>(
         )
         tracks.clear()
         trackInPlaylistAdapter?.notifyDataSetChanged()
+        //if (playlist.trackIds?.isEmpty() == true) showMistakeDialog()
     }
 
     private fun showStateWithTracks(listTracks: List<Track>, durationSumTime: Long) {
@@ -183,8 +185,11 @@ class PlaylistDetailsFragment : BindingFragment<FragmentPlaylistDetailsBinding>(
     private fun showStateDeletedTrack(
         listTracks: List<Track>,
         durationSumTime: Long,
-        counterTracks: Int
+        counterTracks: Int,
+        playlist: Playlist
     ) {
+        Log.d("PLAYLIST SSDT playlist ", playlist.toString())
+        Log.d("PLAYLIST SSDT counter", counterTracks.toString())
         val updatedTracks = listTracks.map { track ->
             track.copy(artworkUrl100 = track.artworkUrl100?.replaceAfterLast('/', "60x60bb.jpg"))
         }
@@ -199,7 +204,8 @@ class PlaylistDetailsFragment : BindingFragment<FragmentPlaylistDetailsBinding>(
         tracks.clear()
         tracks.addAll(updatedTracks)
         trackInPlaylistAdapter?.notifyDataSetChanged()
-        if (updatedTracks.isEmpty()) showMistakeDialog()
+
+        //if (playlist.trackIds?.isEmpty() == true) showMistakeDialog()
     }
 
     private fun showStateDeletedPlaylist() {

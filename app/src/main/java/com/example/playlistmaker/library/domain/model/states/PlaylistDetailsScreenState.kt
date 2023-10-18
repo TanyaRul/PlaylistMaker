@@ -13,7 +13,8 @@ sealed class PlaylistDetailsScreenState {
     data class DeletedTrack(
         val listTracks: List<Track>,
         val durationSumTime: Long,
-        val counterTracks: Int
+        val counterTracks: Int,
+        val playlist: Playlist
     ) : PlaylistDetailsScreenState()
 
     object Error : PlaylistDetailsScreenState()

@@ -1,5 +1,6 @@
 package com.example.playlistmaker.library.domain.impl
 
+import android.util.Log
 import com.example.playlistmaker.library.domain.db.PlaylistsInteractor
 import com.example.playlistmaker.library.domain.db.PlaylistsRepository
 import com.example.playlistmaker.library.domain.model.Playlist
@@ -94,6 +95,8 @@ class PlaylistsInteractorImpl(
         trackId: Int
     ): Flow<PlaylistDetailsScreenState> {
         val flowTrack = playlistsRepository.removeTrackFromPlaylist(playlistId, trackId)
+        val newPlaylist = playlistsRepository.getPlaylistById(playlistId)
+        Log.d("PLAYLIST newPlaylist", newPlaylist.toString())
 
         if (flowTrack == null) {
             return flow { emit(PlaylistDetailsScreenState.Error) }
@@ -111,10 +114,12 @@ class PlaylistsInteractorImpl(
                 }
                 val duration = Duration.ofMillis(durationTimeSum)
                 val minutes = duration.toMinutes()
+
                 PlaylistDetailsScreenState.DeletedTrack(
                     trackList.asReversed(),
                     minutes,
-                    trackList.size
+                    trackList.size,
+                    newPlaylist
                 )
             }
         }
