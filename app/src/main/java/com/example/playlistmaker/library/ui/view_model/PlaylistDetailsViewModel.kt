@@ -48,7 +48,7 @@ class PlaylistDetailsViewModel(
                     }
             }
         } else {
-            _tracksLiveData.postValue(listOf())
+            renderStateTracksInPlaylist(PlaylistDetailsScreenState.NoTracks)//_tracksLiveData.postValue(listOf())
         }
     }
 

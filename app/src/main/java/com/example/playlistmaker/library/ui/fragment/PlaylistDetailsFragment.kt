@@ -57,6 +57,8 @@ class PlaylistDetailsFragment : BindingFragment<FragmentPlaylistDetailsBinding>(
 
         playlistDetailsViewModel.getFlowPlaylistById(playlist!!.id)
 
+        Log.d("PLAYLIST oncreate", playlist.toString())
+
         playlistDetailsViewModel.getStatePlaylistLiveData().observe(viewLifecycleOwner) {
             renderTracksInPlaylist(it)
         }
@@ -75,16 +77,14 @@ class PlaylistDetailsFragment : BindingFragment<FragmentPlaylistDetailsBinding>(
             requireContext().startActivity(playerIntent)
         }
 
-        tracksBottomSheetBehavior = BottomSheetBehavior.from(binding.tracksBottomSheet).apply {
-            state = BottomSheetBehavior.STATE_COLLAPSED
-        }
+        tracksBottomSheetBehavior = BottomSheetBehavior.from(binding.tracksBottomSheet)
 
         binding.tracksBottomSheet.post {
             val buttonLocation = IntArray(2)
             binding.ivShareButton.getLocationOnScreen(buttonLocation)
             val openMenuHeightFromBottom =
                 binding.root.height - buttonLocation[1] - resources.getDimensionPixelSize(R.dimen.layout_margin_very_low)
-            tracksBottomSheetBehavior?.peekHeight = openMenuHeightFromBottom
+            tracksBottomSheetBehavior?.peekHeight = openMenuHeightFromBottom.coerceAtLeast(100)
         }
 
         playlistBottomSheetBehavior = BottomSheetBehavior.from(binding.playlistBottomSheet).apply {
@@ -115,7 +115,10 @@ class PlaylistDetailsFragment : BindingFragment<FragmentPlaylistDetailsBinding>(
             showMenu(playlist!!)
         }
 
-        binding.ivShareButton.setOnClickListener { share() }
+        binding.ivShareButton.setOnClickListener {
+            Log.d("PLAYLIST onclick", playlist.toString())
+            share()
+        }
     }
 
     private fun renderTracksInPlaylist(state: PlaylistDetailsScreenState) {
@@ -196,7 +199,7 @@ class PlaylistDetailsFragment : BindingFragment<FragmentPlaylistDetailsBinding>(
         tracks.clear()
         tracks.addAll(updatedTracks)
         trackInPlaylistAdapter?.notifyDataSetChanged()
-
+        if (updatedTracks.isEmpty()) showMistakeDialog()
     }
 
     private fun showStateDeletedPlaylist() {
@@ -220,20 +223,20 @@ class PlaylistDetailsFragment : BindingFragment<FragmentPlaylistDetailsBinding>(
             Glide.with(requireActivity())
                 .load(playlist?.playlistCoverPath)
                 .placeholder(R.drawable.placeholder_large)
-                .into(binding.ivCover)
+                .into(ivCover)
 
-            binding.tvTitle.text = playlist?.playlistTitle
+            tvTitle.text = playlist?.playlistTitle
             if (playlist?.playlistDescription.isNullOrEmpty()) {
-                binding.tvDescription.isVisible = false
+                tvDescription.isVisible = false
             } else {
-                binding.tvDescription.text = playlist?.playlistDescription
+                tvDescription.text = playlist?.playlistDescription
             }
 
-            binding.tvTracksTime.text = requireActivity().resources.getQuantityString(
+            tvTracksTime.text = requireActivity().resources.getQuantityString(
                 R.plurals.minutes,
                 0, 0
             )
-            binding.tvTracksCount.text = playlist?.numberOfTracks?.let {
+            tvTracksCount.text = playlist?.numberOfTracks?.let {
                 requireActivity().resources.getQuantityString(
                     R.plurals.track_count,
                     it, playlist.numberOfTracks
@@ -260,7 +263,7 @@ class PlaylistDetailsFragment : BindingFragment<FragmentPlaylistDetailsBinding>(
                     }
                 })
 
-            binding.rvTrack.adapter = trackInPlaylistAdapter
+            rvTrack.adapter = trackInPlaylistAdapter
         }
     }
 
@@ -286,16 +289,16 @@ class PlaylistDetailsFragment : BindingFragment<FragmentPlaylistDetailsBinding>(
                 )
                 .into(playlistItem.ivPlaylistCoverSmall)
 
-            binding.playlistItem.tvPlaylistName.text = playlist.playlistTitle
+            playlistItem.tvPlaylistName.text = playlist.playlistTitle
             val countText = playlist.numberOfTracks?.let {
                 requireActivity().resources.getQuantityString(
                     R.plurals.track_count,
                     it, playlist.numberOfTracks
                 )
             }
-            binding.playlistItem.tvNumberOfTracks.text = countText
+            playlistItem.tvNumberOfTracks.text = countText
 
-            binding.tvDeleteTextMenu.setOnClickListener {
+            tvDeleteTextMenu.setOnClickListener {
                 playlistBottomSheetBehavior?.apply {
                     state = BottomSheetBehavior.STATE_HIDDEN
                 }
@@ -312,14 +315,15 @@ class PlaylistDetailsFragment : BindingFragment<FragmentPlaylistDetailsBinding>(
                     }.show()
             }
 
-            binding.tvShareTextMenu.setOnClickListener {
+            tvShareTextMenu.setOnClickListener {
                 playlistBottomSheetBehavior?.apply {
                     state = BottomSheetBehavior.STATE_HIDDEN
                 }
+
                 share()
             }
 
-            binding.tvUpdateTextMenu.setOnClickListener {
+            tvUpdateTextMenu.setOnClickListener {
                 mainViewModel.setPlaylist(playlist)
                 findNavController().navigate(
                     R.id.playlistEditingFragment
@@ -329,6 +333,7 @@ class PlaylistDetailsFragment : BindingFragment<FragmentPlaylistDetailsBinding>(
     }
 
     private fun share() {
+        Log.d("PLAYLIST SHARE", playlist.toString())
         if (playlist?.numberOfTracks!! > 0) trackInPlaylistAdapter?.let {
             playlistDetailsViewModel.sharePlaylist(
                 playlist!!,

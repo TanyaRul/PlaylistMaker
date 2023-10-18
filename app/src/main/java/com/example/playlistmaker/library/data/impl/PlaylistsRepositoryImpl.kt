@@ -132,9 +132,9 @@ class PlaylistsRepositoryImpl(
         trackId: Int
     ): Flow<List<Track>?>? {
         try {
+
             val oldPlaylist = getPlaylistById(playlistId)
             val oldPlaylistTrackIds = oldPlaylist.trackIds as ArrayList<String>
-            val stringListIds: List<String> = oldPlaylistTrackIds.map { it }
 
             oldPlaylistTrackIds.remove(trackId.toString())
             oldPlaylist.numberOfTracks = oldPlaylist.numberOfTracks?.minus(1)
@@ -144,10 +144,14 @@ class PlaylistsRepositoryImpl(
                 appDatabase.trackInPlaylistDao().deleteTrackByIdFromTracksInPlaylists(trackId)
             }
 
-            return if (stringListIds.isEmpty()) {
+            val newPlaylist = appDatabase.playlistDao().getPlaylistById(playlistId)
+            val newPlaylistTrackIds = takeFromJson(newPlaylist.trackIds)
+            val listTrackIds: List<String> = newPlaylistTrackIds.map { it.toString() }
+
+            return if (listTrackIds.isEmpty()) {
                 flow { emit(ArrayList<Track>()) }
             } else {
-                getTracksFromPlaylistByIds(stringListIds)
+                getTracksFromPlaylistByIds(listTrackIds)
             }
         } catch (exp: Throwable) {
             return null
