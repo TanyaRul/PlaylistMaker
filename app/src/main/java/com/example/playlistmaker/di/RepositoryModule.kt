@@ -2,11 +2,11 @@ package com.example.playlistmaker.di
 
 import android.content.Context
 import android.media.MediaPlayer
-import com.example.playlistmaker.library.data.db.PlaylistDbConverter
+import com.example.playlistmaker.library.data.db.converters.PlaylistDbConverter
 import com.example.playlistmaker.player.data.impl.PlayerRepositoryImpl
 import com.example.playlistmaker.player.data.repository.PlayerRepository
-import com.example.playlistmaker.library.data.db.TrackDbConverter
-import com.example.playlistmaker.library.data.db.TrackInPlaylistConverter
+import com.example.playlistmaker.library.data.db.converters.TrackDbConverter
+import com.example.playlistmaker.library.data.db.converters.TrackInPlaylistConverter
 import com.example.playlistmaker.library.data.impl.FavoritesRepositoryImpl
 import com.example.playlistmaker.library.data.impl.PlaylistsRepositoryImpl
 import com.example.playlistmaker.search.data.impl.TracksRepositoryImpl

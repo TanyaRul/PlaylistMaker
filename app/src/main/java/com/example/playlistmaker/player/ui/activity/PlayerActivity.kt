@@ -15,7 +15,7 @@ import com.example.playlistmaker.databinding.ActivityPlayerBinding
 import com.example.playlistmaker.library.domain.model.Playlist
 import com.example.playlistmaker.library.ui.PlaylistsScreenState
 import com.example.playlistmaker.library.ui.fragment.NewPlaylistFragment
-import com.example.playlistmaker.player.ui.states.AddTrackState
+import com.example.playlistmaker.library.domain.model.states.AddTrackState
 import com.example.playlistmaker.player.domain.model.PlayerState
 import com.example.playlistmaker.player.ui.BottomSheetPlaylistsAdapter
 import com.example.playlistmaker.player.ui.model.PlayerTrack
@@ -256,8 +256,7 @@ class PlayerActivity : AppCompatActivity() {
     private fun showEmpty() {
         binding.rvTracks.isVisible = false
         binding.placeholderTextNoPlaylist.isVisible = true
-        binding.placeholderImageNoPlaylist.isVisible = true
-        binding.placeholderTextNoPlaylist.setText(R.string.no_playlist)
+        binding.placeholderImageNoPlaylist.isVisible = false
     }
 
     private fun showContent(playlists: List<Playlist>) {

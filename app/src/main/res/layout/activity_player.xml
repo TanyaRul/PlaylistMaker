@@ -271,22 +271,22 @@
         <!-- Вёрстка Bottom Sheet с кнопкой и списком -->
 
         <View
-            android:layout_width="50dp"
-            android:layout_height="4dp"
+            android:layout_width="@dimen/layout_width_50"
+            android:layout_height="@dimen/layout_height_4"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/layout_margin_very_low"
             android:background="@drawable/rounded_rectangle_view" />
 
         <TextView
             android:id="@+id/tvAddToPlaylist"
             style="@style/SearchActivityTextStyle"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="@dimen/layout_margin_top_30"
             android:text="@string/add_to_playlist" />
 
         <Button
             android:id="@+id/btnNewPlaylist"
             style="@style/SearchActivityButtonStyle"
-            android:layout_marginTop="28dp"
+            android:layout_marginTop="@dimen/layout_margin_top_28"
             android:text="@string/new_playlist"
             android:visibility="visible" />
 

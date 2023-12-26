@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginStart="@dimen/track_margin_start"
-        android:layout_marginEnd="44dp"
+        android:layout_marginEnd="@dimen/layout_margin_end_44"
         android:layout_weight="1"
         android:orientation="vertical">
 
@@ -32,14 +32,14 @@
             android:maxLines="1"
             android:textColor="?attr/colorOnPrimary"
             android:textSize="@dimen/regular_text_size"
-            tools:text="Smells Like Teen SpiritSmells Like Teen SpiritSmells Like Teen SpiritSmells Like Teen Spirit" />
+            tools:text="BEST SONGS 2021 BEST SONGS 2021 BEST SONGS 2021" />
 
         <TextView
             android:id="@+id/tvNumberOfTracks"
             style="@style/TrackViewArtistNameTrackTimeStyle"
             android:ellipsize="end"
             android:maxLines="1"
-            tools:text="NirvanaNirvanaNirvanaNirvanaNirvanaNirvanaNirvanaNirvanaNirvanaNirvanaNirvanaNirvanaNirvanaNirvana" />
+            tools:text="11111 треков" />
 
     </LinearLayout>
 

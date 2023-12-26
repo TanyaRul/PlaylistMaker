@@ -9,7 +9,7 @@ import com.example.playlistmaker.library.domain.db.PlaylistsInteractor
 import com.example.playlistmaker.library.domain.model.Playlist
 import com.example.playlistmaker.library.ui.PlaylistsScreenState
 import com.example.playlistmaker.player.domain.PlayerInteractor
-import com.example.playlistmaker.player.ui.states.AddTrackState
+import com.example.playlistmaker.library.domain.model.states.AddTrackState
 import com.example.playlistmaker.player.domain.model.PlayerState
 import com.example.playlistmaker.player.ui.states.PlayerToastState
 import com.example.playlistmaker.search.domain.model.Track

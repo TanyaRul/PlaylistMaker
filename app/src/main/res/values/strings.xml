@@ -43,6 +43,20 @@
     <string name="already_in_playlist">Трек уже добавлен в плейлист</string>
     <string name="add_to_playlist">Добавить в плейлист</string>
     <string name="track_count">трек</string>
+    <string name="share_playlist">Поделиться</string>
+    <string name="update_playlist">Редактировать информацию</string>
+    <string name="delete_playlist">Удалить плейлист</string>
+    <string name="delete_track">Удалить трек</string>
+    <string name="delete_track_warning">Вы уверены, что хотите удалить трек из плейлиста?</string>
+    <string name="delete_playlist_warning">Вы уверены, что хотите удалить этот плейлист?</string>
+    <string name="share_empty_playlist">В этом плейлисте нет списка треков, которым можно поделиться</string>
+    <string name="empty_playlist">В этом плейлисте нет треков</string>
+    <string name="ok">OK</string>
+    <string name="yes">ДА</string>
+    <string name="no">НЕТ</string>
+    <string name="delete">Удалить</string>
+    <string name="save">Сохранить</string>
+    <string name="edit">Редактировать</string>
 
     <plurals name="track_count">
         <item quantity="zero">%1$d треков</item>
@@ -51,5 +65,14 @@
         <item quantity="few">%1$d трека</item>
         <item quantity="many">%1$d треков</item>
         <item quantity="other">%1$d треков</item>
+    </plurals>
+
+    <plurals name="minutes">
+        <item quantity="zero">%1$d минут</item>
+        <item quantity="one">%1$d минута</item>
+        <item quantity="two">%1$d минуты</item>
+        <item quantity="few">%1$d минуты</item>
+        <item quantity="many">%1$d минут</item>
+        <item quantity="other">%1$d минут</item>
     </plurals>
 </resources>

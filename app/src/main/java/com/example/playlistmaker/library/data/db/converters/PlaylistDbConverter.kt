@@ -1,4 +1,4 @@
-package com.example.playlistmaker.library.data.db
+package com.example.playlistmaker.library.data.db.converters
 
 import com.example.playlistmaker.library.data.db.entity.PlaylistDb
 import com.example.playlistmaker.library.domain.model.Playlist
@@ -6,7 +6,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
 class PlaylistDbConverter {
-    fun map(playlistDb: PlaylistDb): Playlist {
+    fun mapFromPlaylistDbToPlaylist(playlistDb: PlaylistDb): Playlist {
         val trackIdsList =
             if (playlistDb.trackIds != "null" && !playlistDb.trackIds.isNullOrEmpty()) {
                 fromString(playlistDb.trackIds)
@@ -24,7 +24,7 @@ class PlaylistDbConverter {
         )
     }
 
-    fun map(playlist: Playlist): PlaylistDb {
+    fun mapFromPlaylistToPlaylistDb(playlist: Playlist): PlaylistDb {
         return PlaylistDb(
             id = playlist.id,
             playlistTitle = playlist.playlistTitle,

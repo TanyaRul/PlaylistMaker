@@ -1,4 +1,4 @@
-package com.example.playlistmaker.library.data.db
+package com.example.playlistmaker.library.data.db.converters
 
 import com.example.playlistmaker.library.data.db.entity.TrackInPlaylist
 import com.example.playlistmaker.search.domain.model.Track
@@ -16,6 +16,21 @@ class TrackInPlaylistConverter {
             track.primaryGenreName,
             track.country,
             track.previewUrl,
+        )
+    }
+
+    fun map(trackInPlaylist: TrackInPlaylist): Track {
+        return Track(
+            trackInPlaylist.id,
+            trackInPlaylist.trackName,
+            trackInPlaylist.artistName,
+            trackInPlaylist.trackTimeMillis,
+            trackInPlaylist.artworkUrl100,
+            trackInPlaylist.collectionName,
+            trackInPlaylist.releaseDate,
+            trackInPlaylist.primaryGenreName,
+            trackInPlaylist.country,
+            trackInPlaylist.previewUrl,
         )
     }
 }
